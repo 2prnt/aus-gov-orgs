@@ -17,7 +17,7 @@ The aim is a single, source-cited table analogous to the Commonwealth Department
 - `scripts/build.py` — parse the official jurisdiction sources into the base entity list
 - `scripts/enrich.py` — map the AGOR schema, attach source-provided fields, match ABNs from the ABR bulk extract, and rewrite the published CSVs
 - `icons/` — one icon per organisation (see [Icons](#icons))
-- `scripts/wikidata_sites.py`, `scripts/fetch_icons.py`, `scripts/build_icons.py` — collect the icons
+- `scripts/wikidata_sites.py`, `fetch_icons.py`, `fetch_icons_deep.py`, `fetch_big_fallbacks.py`, `build_icons.py` — collect the icons
 - `scripts/extract_abr.py` — stream the data.gov.au ABN Bulk Extract ZIPs into a compact government-entity JSONL used by `enrich.py`
 
 ## Schema
@@ -187,44 +187,48 @@ Row counts in the table above are rows remaining in `organisations.csv` after de
 Every organisation has a small square PNG icon for use on profile pages, named after the organisation:
 `icons/png/<slug>.png`, where the slug is a jurisdiction prefix (`cth`, `nsw`, `vic`, `qld`, `wa`, `sa`, `tas`, `act`, `nt`) plus the kebab-case title, for example `icons/png/cth-australian-taxation-office.png`. Slugs are unique (a `-2` suffix is added for the few repeated titles).
 
-- `icons/png/` — one PNG per organisation (2,560 files, 683 distinct images). Icons are the site's own icon (apple-touch-icon, largest `<link rel="icon">`, web-app manifest icon, then `/favicon.ico`), scaled down to at most 128 px and padded with transparency to a square. Small source icons are not upscaled, so `width`/`height` in the manifest vary from 16 to 128.
-- `icons/svg/` — an SVG copy where the site publishes an SVG icon (79 files). Defence-fallback rows also get the "Australian Government | Defence" horizontal crest SVG from defence.gov.au.
+- `icons/png/` — one PNG per organisation (2,560 files, 653 distinct images), padded with transparency to a square. Own-site icons are scaled down to at most 128 px; fallback logos are 128–256 px.
+- `icons/svg/` — an SVG copy where the site publishes an SVG icon or logo (135 files). Defence-fallback rows get the "Australian Government | Defence" crest SVG from defence.gov.au.
 - `icons/manifest.csv` — slug, title, jurisdiction, website, icon file, SVG file, icon source URL, method, notes, width, height, original size and SHA-256.
 - `icons/aus-gov-orgs-icons-png.zip` — all PNGs plus the manifest in one download.
-- `data/organisations.csv` and `data/by-jurisdiction/*.csv` gain three columns: `Icon file`, `Icon source URL` and `Icon method`.
+- `data/organisations.csv` and `data/by-jurisdiction/*.csv` include `Icon file`, `Icon source URL` and `Icon method`.
+
+Quality bar: every PNG is at least 1,000 bytes (smallest is 1,011 bytes), at least 32 px from a source of at least 32 px (nothing is upscaled), not blank, not all-white, and not a hosting-platform placeholder. Every fallback logo (parent, portfolio, Defence, jurisdiction) is at least 128 px. Icons that missed the bar were re-searched on the organisation's site (apple-touch and manifest icons, `/apple-touch-icon.png`, the header home-link logo, square `og:image`, SVGs rasterised) and then Google's favicon service at 128 px before falling back.
 
 Method, in order of preference:
 
 | Method | Meaning |
 |---|---|
-| `own-site` | Icon fetched from the organisation's listed website (subpage URLs use the host's site icon, so committees hosted on a department site share its icon). |
+| `own-site` | Icon or logo from the organisation's listed website (subpage URLs use the host's site icon, so committees hosted on a department site share its icon). |
 | `own-site-wikidata` | The row had no website; an official website was found on Wikidata (exact title match, Australian item) and its icon fetched. The website is recorded in the manifest only, not added to the dataset. |
-| `google-s2` | The site blocked or failed direct icon requests, so the site's favicon was taken from Google's favicon service. Recorded as third-party. |
-| `defence-fallback` | No icon could be retrieved for a Defence-portfolio body, so the Department of Defence site icon is used. |
-| `parent` | No own icon; the parent organisation's icon (from `Parent Organisation`) or the portfolio department's icon is used. |
-| `fallback-jurisdiction` | No own or parent icon; the jurisdiction government's icon is used (Commonwealth: the Australian Government coat of arms as published on agriculture.gov.au; states and territories: the icon of nsw.gov.au, vic.gov.au, qld.gov.au, wa.gov.au, sa.gov.au, tas.gov.au, act.gov.au or nt.gov.au). |
+| `google-s2` | The site blocked or failed direct icon requests, so its favicon was taken from Google's favicon service. Recorded as third-party. |
+| `defence-fallback` | No usable own icon for a Defence-portfolio body: the "Australian Government — Defence" crest from defence.gov.au. |
+| `parent` | No usable own icon: the parent organisation's (from `Parent Organisation`) or portfolio department's icon or logo, at least 128 px. Veterans' Affairs bodies use the DVA icon. |
+| `fallback-jurisdiction` | No usable own or parent icon: the government's logo. Commonwealth: Australian Government coat of arms (agriculture.gov.au). NSW: nsw.gov.au waratah. Victoria: Victoria State Government logo (vic.gov.au). Queensland: Queensland Government crest (qld.gov.au). WA: wa.gov.au. SA: Government of South Australia logo (sa.gov.au). Tasmania: Tasmanian Government logo (service.tas.gov.au). ACT: ACT Government logo (act.gov.au). NT: nt.gov.au. |
 
 | Jurisdiction | `own-site` | `own-site-wikidata` | `google-s2` | `defence-fallback` | `parent` | `fallback-jurisdiction` | Total |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| Commonwealth | 712 | 3 | 37 | 26 | 583 | 11 | 1,372 |
-| NSW | 0 | 48 | 6 | 0 | 218 | 132 | 404 |
-| Victoria | 0 | 54 | 2 | 0 | 188 | 14 | 258 |
-| Queensland | 20 | 1 | 4 | 0 | 0 | 3 | 28 |
-| WA | 124 | 117 | 13 | 0 | 0 | 36 | 290 |
-| SA | 0 | 17 | 1 | 0 | 0 | 97 | 115 |
-| Tasmania | 0 | 8 | 0 | 0 | 0 | 23 | 31 |
-| ACT | 35 | 0 | 0 | 0 | 0 | 0 | 35 |
+| Commonwealth | 670 | 2 | 30 | 27 | 548 | 95 | 1,372 |
+| NSW | 0 | 46 | 5 | 0 | 160 | 193 | 404 |
+| Victoria | 0 | 44 | 1 | 0 | 132 | 81 | 258 |
+| Queensland | 20 | 1 | 3 | 0 | 0 | 4 | 28 |
+| WA | 125 | 116 | 13 | 0 | 0 | 36 | 290 |
+| SA | 0 | 16 | 1 | 0 | 0 | 98 | 115 |
+| Tasmania | 0 | 7 | 0 | 0 | 0 | 24 | 31 |
+| ACT | 32 | 0 | 0 | 0 | 0 | 3 | 35 |
 | NT | 0 | 8 | 1 | 0 | 0 | 18 | 27 |
-| **All** | 891 | 256 | 64 | 26 | 989 | 334 | 2,560 |
+| **All** | 847 | 240 | 54 | 27 | 840 | 552 | 2,560 |
 
-No logo was drawn or generated; every file comes from an official website (or Google's cache of one, where marked). Placeholder platform icons (the GovCMS default `/favicon.ico` and Google's letter placeholder) were rejected. Icons and logos remain the property of the respective organisations and governments.
+No logo was drawn or generated; every file comes from an official website (or Google's cache of one, where marked). The jurisdiction and Defence logos were rasterised or trimmed from the official artwork only. Icons and logos remain the property of the respective organisations and governments.
 
 To rebuild the icons:
 
 ```text
-python3 scripts/wikidata_sites.py   # find official sites for rows without a website
-python3 scripts/fetch_icons.py      # fetch each host's icon into a local cache
-python3 scripts/build_icons.py      # assign icons, write icons/ and the icon CSV columns
+python3 scripts/wikidata_sites.py        # find official sites for rows without a website
+python3 scripts/fetch_icons.py           # fetch each host's icon into a local cache
+python3 scripts/fetch_icons_deep.py      # deeper search for icons that miss the quality bar
+python3 scripts/fetch_big_fallbacks.py   # >= 128 px logos for parent/portfolio fallbacks
+python3 scripts/build_icons.py           # assign icons, write icons/ and the icon CSV columns
 ```
 
 ## Rebuilding

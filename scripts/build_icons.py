@@ -8,14 +8,17 @@ import csv, hashlib, json, re, shutil, unicodedata, zipfile
 from pathlib import Path
 from urllib.parse import urlparse
 from PIL import Image
+import sys
+sys.path.insert(0, str(Path(__file__).parent))
+from fetch_icons_deep import quality
 
 ROOT = Path(__file__).resolve().parent.parent
 WORK = Path("/workspace/icons_work"); CACHE = WORK / "cache"
 ICONS = ROOT / "icons"
 PREFIX = {"Commonwealth": "cth", "NSW": "nsw", "Victoria": "vic", "Queensland": "qld", "WA": "wa", "SA": "sa", "Tasmania": "tas", "ACT": "act", "NT": "nt"}
-JURIS = {"Commonwealth": "COA", "NSW": "https://www.nsw.gov.au/", "Victoria": "https://www.vic.gov.au/",
-         "Queensland": "https://www.qld.gov.au/", "WA": "https://www.wa.gov.au/", "SA": "https://www.sa.gov.au/",
-         "Tasmania": "https://www.tas.gov.au/", "ACT": "https://www.act.gov.au/", "NT": "https://nt.gov.au/"}
+JURIS = {"Commonwealth": "COA", "NSW": "https://www.nsw.gov.au/", "Victoria": "VIC",
+         "Queensland": "https://www.qld.gov.au/", "WA": "https://www.wa.gov.au/", "SA": "SA",
+         "Tasmania": "TAS", "ACT": "ACT", "NT": "https://nt.gov.au/"}
 DEFENCE = "https://www.defence.gov.au/"
 PORTFOLIO = {
  "Commonwealth": [("Veterans", "https://www.dva.gov.au/"), ("Finance", "https://www.finance.gov.au/"), ("Infrastructure", "https://www.infrastructure.gov.au/"),
@@ -54,20 +57,34 @@ def main():
     for v in hosts.values():
         if v.get("method") == "google-s2": s2_counts[v["s2_sha"]] = s2_counts.get(v["s2_sha"], 0) + 1
     s2_default = {h for h, n in s2_counts.items() if n >= 3}
-    # Australian Government coat of arms (federal logo), as published by agriculture.gov.au
-    hosts["COA"] = {"ok": True, "method": "own-site", "file": "_cth_coat_of_arms.png", "side": 128, "orig": 512,
-                    "src": "https://www.agriculture.gov.au/themes/custom/awe/images/australian-government-logo-512.png"}
-    hosts["DEFENCE"] = dict(hosts["https://www.defence.gov.au/"], svg="_defence_crest_horizontal.svg",
-                    svg_src="https://www.defence.gov.au/themes/custom/custom/defence8ui/images/gov-crest-horizontal.svg")
+    # Curated fallback logos (all >= 256 px rasters of official artwork, see README)
+    CUR = {
+     "COA": ("_cth_coat_of_arms.png", "https://www.agriculture.gov.au/themes/custom/awe/images/australian-government-logo-512.png"),
+     "DEFENCE": ("_defence_crest.png", "https://www.defence.gov.au/themes/custom/custom/defence8ui/images/gov-crest-horizontal.svg"),
+     "VIC": ("_vic_govt.png", "https://www.vic.gov.au/ (footer Victoria State Government logo SVG)"),
+     "TAS": ("_tas_govt.png", "https://www.service.tas.gov.au/__data/assets/git_bridge/0021/290190/dist/mysource_files/tasmania-govt-black..svg"),
+     "SA": ("_sa_govt.png", "https://www.sa.gov.au/__data/assets/image/0006/591828/og-gosa-colour-on-white.png"),
+     "ACT": ("_act_govt.png", "https://www.act.gov.au/__data/assets/image/0019/2541430/ACTGov_inline_black.png"),
+    }
+    for k, (f, src) in CUR.items():
+        hosts[k] = {"ok": True, "method": "own-site", "file": f, "side": Image.open(CACHE / f).size[0], "orig": "", "src": src}
+    hosts["DEFENCE"].update(svg="_defence_crest_horizontal.svg", svg_src=CUR["DEFENCE"][1])
     def good(url):
         h = hosts.get(url) if url else None
-        if (not h or not h.get("ok") or h.get("method") == "google-s2") and url and url.startswith("http"):
+        ok = lambda x: x and x.get("ok") and quality((CACHE / x["file"]).read_bytes())
+        if (not ok(h) or h.get("method") == "google-s2") and url and url.startswith("http"):
             alt = ("https://" + url[7:]) if url.startswith("http://") else ("http://" + url[8:])
             a = hosts.get(alt)
-            if a and a.get("ok") and (a.get("method") == "own-site" or not h or not h.get("ok")): h = a
+            if ok(a) and (a.get("method") == "own-site" or not ok(h)): h = a
         if not h or not h.get("ok"): return None
         if h.get("method") == "google-s2" and h.get("s2_sha") in s2_default: return None
+        if not quality((CACHE / h["file"]).read_bytes()): return None
         return h
+    def good_fb(url):  # fallback icons must be decent: >= 128 px
+        for k in (url, "BIG:" + str(url)):
+            h = good(k)
+            if h and Image.open(CACHE / h["file"]).size[0] >= 128: return h
+        return None
     for k in list(hosts):
         if not good(k): pass
 
@@ -80,7 +97,7 @@ def main():
             if w: site, how = w["website"], "own-site-wikidata"
         h = good(host_root(site))
         if h:
-            res[i] = dict(site=site, host=h, method=how if h["method"] == "own-site" else "google-s2", note="")
+            res[i] = dict(site=site, host=h, hkey=host_root(site), method=how if h["method"] == "own-site" else "google-s2", note="")
     own_by_title = {}
     for i, v in res.items():
         own_by_title.setdefault((rows[i]["Jurisdiction"], norm(rows[i]["Title"])), v)
@@ -92,15 +109,16 @@ def main():
         site = r["Website Address"].strip() or ((wd.get(r["Id"] + "|" + r["Title"]) or {}).get("website", ""))
         note = "site icon not retrievable" if site else "no website"
         if j == "Commonwealth" and "Veterans" not in port and (DEF_RE.search(port) or DEF_RE.search(parent) or DEF_RE.search(r["Title"])):
-            res[i] = dict(site=site, host=good("DEFENCE"), method="defence-fallback", note=note + "; Department of Defence"); continue
-        if parent and (j, norm(parent)) in own_by_title:
-            res[i] = dict(site=site, host=own_by_title[(j, norm(parent))]["host"], method="parent", note=note + "; parent: " + parent); continue
+            res[i] = dict(site=site, host=good_fb("DEFENCE"), method="defence-fallback", note=note + "; Department of Defence"); continue
+        ph = good_fb(own_by_title[(j, norm(parent))]["hkey"]) if parent and (j, norm(parent)) in own_by_title else None
+        if ph:
+            res[i] = dict(site=site, host=ph, method="parent", note=note + "; parent: " + parent); continue
         hit = None
         for key, url in PORTFOLIO.get(j, []):
-            if key.lower() in port.lower() and good(url): hit = url; break
+            if key.lower() in port.lower() and good_fb(url): hit = url; break
         if hit:
-            res[i] = dict(site=site, host=good(hit), method="parent", note=note + "; portfolio: " + port); continue
-        res[i] = dict(site=site, host=good(JURIS[j]), method="fallback-jurisdiction", note=note); assert res[i]["host"], j
+            res[i] = dict(site=site, host=good_fb(hit), method="parent", note=note + "; portfolio: " + port); continue
+        res[i] = dict(site=site, host=good_fb(JURIS[j]), method="fallback-jurisdiction", note=note); assert res[i]["host"], j
 
     # write files
     if ICONS.exists(): shutil.rmtree(ICONS)
@@ -119,7 +137,7 @@ def main():
         r["Icon file"] = f"icons/png/{slug}.png"; r["Icon source URL"] = h["src"]; r["Icon method"] = v["method"]
         manifest.append({"slug": slug, "org title": r["Title"], "jurisdiction": r["Jurisdiction"], "website": v["site"],
                          "icon file": r["Icon file"], "svg file": svg_rel, "icon source URL": h["src"], "method": v["method"],
-                         "notes": v["note"], "width": h["side"], "height": h["side"], "original size": h.get("orig", ""),
+                         "notes": v["note"], "width": Image.open(CACHE / h["file"]).size[0], "height": Image.open(CACHE / h["file"]).size[1], "original size": h.get("orig", ""),
                          "sha256": hashlib.sha256(data).hexdigest()})
     cols = list(rows[0].keys())
     for p in [ROOT / "data/organisations.csv"]:
