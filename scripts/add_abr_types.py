@@ -34,6 +34,8 @@ SOURCE = ("ABR ABN Bulk Extract (11 November 2026) – government entity types",
           "https://data.gov.au/data/dataset/5bd7fcab-e315-42cb-8daf-50b7efc2027e", "11 November 2026")
 DORMANT_BEFORE = "20100101"
 # Bodies abolished, renamed or merged whose ABNs are still active (checked by hand)
+# Manual review of questionable rows (November 2026): data/abr_types_review.csv
+REVIEW = {r["ABN"]: r for r in csv.DictReader(open(Path(__file__).resolve().parents[1] / "data/abr_types_review.csv", encoding="utf-8"))}
 KNOWN_DEFUNCT = [r"^WORKPLACE AUTHORITY$", r"^NATIONAL WATER COMMISSION$", r"^HEALTH WORKFORCE AUSTRALIA$", r"^NATIONAL HEALTH PERFORMANCE AUTHORITY$",
     r"ROADS & TRAFFIC AUTHORITY", r"ROADS AND TRAFFIC AUTHORITY", r"^STATE RAIL AUTHORITY", r"^TAFE NSW ?- ?", r"RURAL LANDS PROTECTION BOARD",
     r"^MARITIME AUTHORITY OF NSW", r"^NSW COMMISSION FOR CHILDREN AND YOUNG PEOPLE$", r"^OFFICE OF POLICE INTEGRITY$", r"^MERIT PROTECTION BOARDS$",
@@ -126,6 +128,8 @@ def main():
         if any(re.search(p, rec["name"].upper()) for p in KNOWN_DEFUNCT):
             drop("known abolished/merged body (manual list)", rec); continue
         if rec["abn"] in abns: drop("already present (same ABN)", rec); continue
+        if REVIEW.get(rec["abn"], {}).get("Decision") == "remove":
+            drop("removed on manual review (abolished, internal unit, school or not a government body)", rec); continue
         if rec["name"].upper().strip() in MANUAL_DUP: drop("near-duplicate of an existing body", rec); continue
         j = jurisdiction(rec)
         U = rec["name"].upper()
@@ -159,6 +163,7 @@ def main():
             best[key] = (j, rec, d)
     added = []
     for j, rec, d in best.values():
+        rv = REVIEW.get(rec["abn"], {})
         row = {k: "" for k in cols}
         upd = d.get("updated", "")
         row.update({"Jurisdiction": j, "Title": nice(rec["name"]), "Classification": rec["type_text"],
@@ -170,6 +175,11 @@ def main():
                                    + ("; GST registered" if d.get("gst") == "ACT" else "")
                                    + ". Current status not confirmed by an official agency list.",
                     "Source name": SOURCE[0], "Source URL": SOURCE[1], "Source date": SOURCE[2]})
+        if rv.get("Decision") == "keep":
+            row["Title"] = rv["Title"] or row["Title"]
+            row["Website Address"] = rv["Website"]
+            row["Description"] = row["Description"].replace("Current status not confirmed by an official agency list.",
+                                                            "Checked November 2026: " + rv["Reason"] + ".")
         added.append(row)
     order = ["Commonwealth", "NSW", "Victoria", "Queensland", "WA", "SA", "Tasmania", "ACT", "NT"]
     rows += added
