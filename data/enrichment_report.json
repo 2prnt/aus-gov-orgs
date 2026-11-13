@@ -68,10 +68,10 @@
     }
   },
   "NSW": {
-    "rows": 404,
+    "rows": 406,
     "ABN": {
       "n": 141,
-      "pct": 34.9
+      "pct": 34.7
     },
     "Website Address": {
       "n": 0,
@@ -79,27 +79,27 @@
     },
     "Portfolio": {
       "n": 404,
-      "pct": 100.0
+      "pct": 99.5
     },
     "Classification": {
-      "n": 404,
+      "n": 406,
       "pct": 100.0
     },
     "Type of Body": {
-      "n": 0,
-      "pct": 0.0
+      "n": 2,
+      "pct": 0.5
     },
     "GFS Sector Classification": {
-      "n": 0,
-      "pct": 0.0
+      "n": 2,
+      "pct": 0.5
     },
     "Established By / Under": {
       "n": 395,
-      "pct": 97.8
+      "pct": 97.3
     },
     "Established by/Under More Info": {
       "n": 404,
-      "pct": 100.0
+      "pct": 99.5
     },
     "Head Office Street Address": {
       "n": 0,
@@ -110,8 +110,8 @@
       "pct": 0.0
     },
     "Head Office State": {
-      "n": 0,
-      "pct": 0.0
+      "n": 2,
+      "pct": 0.5
     },
     "Head Office Postcode": {
       "n": 0,
@@ -119,7 +119,7 @@
     },
     "Accountable Authority": {
       "n": 404,
-      "pct": 100.0
+      "pct": 99.5
     },
     "Contact telephone": {
       "n": 0,
@@ -132,42 +132,42 @@
     "ABN confidence": {
       "exact": 135,
       "high": 6,
-      "blank": 263
+      "blank": 265
     }
   },
   "Victoria": {
-    "rows": 258,
+    "rows": 270,
     "ABN": {
-      "n": 162,
-      "pct": 62.8
+      "n": 168,
+      "pct": 62.2
     },
     "Website Address": {
-      "n": 0,
-      "pct": 0.0
+      "n": 5,
+      "pct": 1.9
     },
     "Portfolio": {
-      "n": 258,
+      "n": 270,
       "pct": 100.0
     },
     "Classification": {
-      "n": 258,
+      "n": 270,
       "pct": 100.0
     },
     "Type of Body": {
-      "n": 258,
+      "n": 270,
       "pct": 100.0
     },
     "GFS Sector Classification": {
-      "n": 0,
-      "pct": 0.0
+      "n": 12,
+      "pct": 4.4
     },
     "Established By / Under": {
-      "n": 0,
-      "pct": 0.0
+      "n": 5,
+      "pct": 1.9
     },
     "Established by/Under More Info": {
-      "n": 0,
-      "pct": 0.0
+      "n": 5,
+      "pct": 1.9
     },
     "Head Office Street Address": {
       "n": 0,
@@ -178,8 +178,8 @@
       "pct": 0.0
     },
     "Head Office State": {
-      "n": 0,
-      "pct": 0.0
+      "n": 12,
+      "pct": 4.4
     },
     "Head Office Postcode": {
       "n": 0,
@@ -198,44 +198,44 @@
       "pct": 0.0
     },
     "ABN confidence": {
-      "exact": 141,
+      "exact": 147,
       "high": 21,
-      "blank": 96
+      "blank": 102
     }
   },
   "Queensland": {
-    "rows": 28,
+    "rows": 182,
     "ABN": {
-      "n": 26,
-      "pct": 92.9
+      "n": 150,
+      "pct": 82.4
     },
     "Website Address": {
-      "n": 25,
-      "pct": 89.3
+      "n": 46,
+      "pct": 25.3
     },
     "Portfolio": {
       "n": 28,
-      "pct": 100.0
+      "pct": 15.4
     },
     "Classification": {
-      "n": 28,
-      "pct": 100.0
+      "n": 86,
+      "pct": 47.3
     },
     "Type of Body": {
-      "n": 0,
-      "pct": 0.0
+      "n": 154,
+      "pct": 84.6
     },
     "GFS Sector Classification": {
-      "n": 0,
-      "pct": 0.0
+      "n": 58,
+      "pct": 31.9
     },
     "Established By / Under": {
-      "n": 0,
-      "pct": 0.0
+      "n": 154,
+      "pct": 84.6
     },
     "Established by/Under More Info": {
-      "n": 0,
-      "pct": 0.0
+      "n": 154,
+      "pct": 84.6
     },
     "Head Office Street Address": {
       "n": 0,
@@ -246,8 +246,8 @@
       "pct": 0.0
     },
     "Head Office State": {
-      "n": 0,
-      "pct": 0.0
+      "n": 154,
+      "pct": 84.6
     },
     "Head Office Postcode": {
       "n": 0,
@@ -266,60 +266,60 @@
       "pct": 0.0
     },
     "ABN confidence": {
-      "exact": 24,
-      "high": 2,
-      "blank": 2
+      "exact": 147,
+      "high": 3,
+      "blank": 32
     }
   },
   "WA": {
-    "rows": 290,
+    "rows": 296,
     "ABN": {
-      "n": 234,
+      "n": 239,
       "pct": 80.7
     },
     "Website Address": {
-      "n": 143,
-      "pct": 49.3
+      "n": 144,
+      "pct": 48.6
     },
     "Portfolio": {
       "n": 0,
       "pct": 0.0
     },
     "Classification": {
-      "n": 290,
+      "n": 296,
       "pct": 100.0
     },
     "Type of Body": {
-      "n": 0,
-      "pct": 0.0
+      "n": 6,
+      "pct": 2.0
     },
     "GFS Sector Classification": {
-      "n": 0,
-      "pct": 0.0
+      "n": 6,
+      "pct": 2.0
     },
     "Established By / Under": {
-      "n": 0,
-      "pct": 0.0
+      "n": 5,
+      "pct": 1.7
     },
     "Established by/Under More Info": {
-      "n": 0,
-      "pct": 0.0
+      "n": 5,
+      "pct": 1.7
     },
     "Head Office Street Address": {
       "n": 143,
-      "pct": 49.3
+      "pct": 48.3
     },
     "Head Office Suburb": {
       "n": 143,
-      "pct": 49.3
+      "pct": 48.3
     },
     "Head Office State": {
-      "n": 143,
-      "pct": 49.3
+      "n": 149,
+      "pct": 50.3
     },
     "Head Office Postcode": {
       "n": 143,
-      "pct": 49.3
+      "pct": 48.3
     },
     "Accountable Authority": {
       "n": 0,
@@ -327,16 +327,16 @@
     },
     "Contact telephone": {
       "n": 288,
-      "pct": 99.3
+      "pct": 97.3
     },
     "Generic agency email": {
       "n": 289,
-      "pct": 99.7
+      "pct": 97.6
     },
     "ABN confidence": {
-      "exact": 220,
+      "exact": 225,
       "high": 14,
-      "blank": 56
+      "blank": 57
     }
   },
   "SA": {
@@ -408,14 +408,150 @@
     }
   },
   "Tasmania": {
-    "rows": 31,
+    "rows": 61,
     "ABN": {
-      "n": 21,
-      "pct": 67.7
+      "n": 43,
+      "pct": 70.5
     },
     "Website Address": {
+      "n": 14,
+      "pct": 23.0
+    },
+    "Portfolio": {
       "n": 0,
       "pct": 0.0
+    },
+    "Classification": {
+      "n": 61,
+      "pct": 100.0
+    },
+    "Type of Body": {
+      "n": 30,
+      "pct": 49.2
+    },
+    "GFS Sector Classification": {
+      "n": 30,
+      "pct": 49.2
+    },
+    "Established By / Under": {
+      "n": 30,
+      "pct": 49.2
+    },
+    "Established by/Under More Info": {
+      "n": 30,
+      "pct": 49.2
+    },
+    "Head Office Street Address": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Head Office Suburb": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Head Office State": {
+      "n": 30,
+      "pct": 49.2
+    },
+    "Head Office Postcode": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Accountable Authority": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Contact telephone": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Generic agency email": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "ABN confidence": {
+      "exact": 42,
+      "high": 1,
+      "blank": 18
+    }
+  },
+  "ACT": {
+    "rows": 39,
+    "ABN": {
+      "n": 20,
+      "pct": 51.3
+    },
+    "Website Address": {
+      "n": 37,
+      "pct": 94.9
+    },
+    "Portfolio": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Classification": {
+      "n": 39,
+      "pct": 100.0
+    },
+    "Type of Body": {
+      "n": 4,
+      "pct": 10.3
+    },
+    "GFS Sector Classification": {
+      "n": 4,
+      "pct": 10.3
+    },
+    "Established By / Under": {
+      "n": 2,
+      "pct": 5.1
+    },
+    "Established by/Under More Info": {
+      "n": 2,
+      "pct": 5.1
+    },
+    "Head Office Street Address": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Head Office Suburb": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Head Office State": {
+      "n": 4,
+      "pct": 10.3
+    },
+    "Head Office Postcode": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Accountable Authority": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Contact telephone": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Generic agency email": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "ABN confidence": {
+      "exact": 18,
+      "high": 2,
+      "blank": 19
+    }
+  },
+  "NT": {
+    "rows": 31,
+    "ABN": {
+      "n": 30,
+      "pct": 96.8
+    },
+    "Website Address": {
+      "n": 3,
+      "pct": 9.7
     },
     "Portfolio": {
       "n": 0,
@@ -426,20 +562,20 @@
       "pct": 100.0
     },
     "Type of Body": {
-      "n": 0,
-      "pct": 0.0
+      "n": 4,
+      "pct": 12.9
     },
     "GFS Sector Classification": {
-      "n": 0,
-      "pct": 0.0
+      "n": 4,
+      "pct": 12.9
     },
     "Established By / Under": {
-      "n": 0,
-      "pct": 0.0
+      "n": 4,
+      "pct": 12.9
     },
     "Established by/Under More Info": {
-      "n": 0,
-      "pct": 0.0
+      "n": 4,
+      "pct": 12.9
     },
     "Head Office Street Address": {
       "n": 0,
@@ -450,8 +586,8 @@
       "pct": 0.0
     },
     "Head Office State": {
-      "n": 0,
-      "pct": 0.0
+      "n": 4,
+      "pct": 12.9
     },
     "Head Office Postcode": {
       "n": 0,
@@ -470,213 +606,77 @@
       "pct": 0.0
     },
     "ABN confidence": {
-      "exact": 21,
-      "high": 0,
-      "blank": 10
-    }
-  },
-  "ACT": {
-    "rows": 35,
-    "ABN": {
-      "n": 18,
-      "pct": 51.4
-    },
-    "Website Address": {
-      "n": 35,
-      "pct": 100.0
-    },
-    "Portfolio": {
-      "n": 0,
-      "pct": 0.0
-    },
-    "Classification": {
-      "n": 35,
-      "pct": 100.0
-    },
-    "Type of Body": {
-      "n": 0,
-      "pct": 0.0
-    },
-    "GFS Sector Classification": {
-      "n": 0,
-      "pct": 0.0
-    },
-    "Established By / Under": {
-      "n": 0,
-      "pct": 0.0
-    },
-    "Established by/Under More Info": {
-      "n": 0,
-      "pct": 0.0
-    },
-    "Head Office Street Address": {
-      "n": 0,
-      "pct": 0.0
-    },
-    "Head Office Suburb": {
-      "n": 0,
-      "pct": 0.0
-    },
-    "Head Office State": {
-      "n": 0,
-      "pct": 0.0
-    },
-    "Head Office Postcode": {
-      "n": 0,
-      "pct": 0.0
-    },
-    "Accountable Authority": {
-      "n": 0,
-      "pct": 0.0
-    },
-    "Contact telephone": {
-      "n": 0,
-      "pct": 0.0
-    },
-    "Generic agency email": {
-      "n": 0,
-      "pct": 0.0
-    },
-    "ABN confidence": {
-      "exact": 16,
-      "high": 2,
-      "blank": 17
-    }
-  },
-  "NT": {
-    "rows": 27,
-    "ABN": {
-      "n": 26,
-      "pct": 96.3
-    },
-    "Website Address": {
-      "n": 0,
-      "pct": 0.0
-    },
-    "Portfolio": {
-      "n": 0,
-      "pct": 0.0
-    },
-    "Classification": {
-      "n": 27,
-      "pct": 100.0
-    },
-    "Type of Body": {
-      "n": 0,
-      "pct": 0.0
-    },
-    "GFS Sector Classification": {
-      "n": 0,
-      "pct": 0.0
-    },
-    "Established By / Under": {
-      "n": 0,
-      "pct": 0.0
-    },
-    "Established by/Under More Info": {
-      "n": 0,
-      "pct": 0.0
-    },
-    "Head Office Street Address": {
-      "n": 0,
-      "pct": 0.0
-    },
-    "Head Office Suburb": {
-      "n": 0,
-      "pct": 0.0
-    },
-    "Head Office State": {
-      "n": 0,
-      "pct": 0.0
-    },
-    "Head Office Postcode": {
-      "n": 0,
-      "pct": 0.0
-    },
-    "Accountable Authority": {
-      "n": 0,
-      "pct": 0.0
-    },
-    "Contact telephone": {
-      "n": 0,
-      "pct": 0.0
-    },
-    "Generic agency email": {
-      "n": 0,
-      "pct": 0.0
-    },
-    "ABN confidence": {
-      "exact": 4,
+      "exact": 8,
       "high": 22,
       "blank": 1
     }
   },
   "All": {
-    "rows": 2560,
+    "rows": 2772,
     "ABN": {
-      "n": 1193,
-      "pct": 46.6
+      "n": 1356,
+      "pct": 48.9
     },
     "Website Address": {
-      "n": 1016,
-      "pct": 39.7
+      "n": 1062,
+      "pct": 38.3
     },
     "Portfolio": {
-      "n": 2062,
-      "pct": 80.5
+      "n": 2074,
+      "pct": 74.8
     },
     "Classification": {
-      "n": 2560,
-      "pct": 100.0
+      "n": 2676,
+      "pct": 96.5
     },
     "Type of Body": {
-      "n": 1630,
-      "pct": 63.7
+      "n": 1842,
+      "pct": 66.5
     },
     "GFS Sector Classification": {
-      "n": 289,
-      "pct": 11.3
+      "n": 405,
+      "pct": 14.6
     },
     "Established By / Under": {
-      "n": 1767,
-      "pct": 69.0
+      "n": 1967,
+      "pct": 71.0
     },
     "Established by/Under More Info": {
-      "n": 1098,
-      "pct": 42.9
+      "n": 1298,
+      "pct": 46.8
     },
     "Head Office Street Address": {
       "n": 1033,
-      "pct": 40.4
+      "pct": 37.3
     },
     "Head Office Suburb": {
       "n": 1030,
-      "pct": 40.2
+      "pct": 37.2
     },
     "Head Office State": {
-      "n": 1007,
-      "pct": 39.3
+      "n": 1219,
+      "pct": 44.0
     },
     "Head Office Postcode": {
       "n": 987,
-      "pct": 38.6
+      "pct": 35.6
     },
     "Accountable Authority": {
       "n": 404,
-      "pct": 15.8
+      "pct": 14.6
     },
     "Contact telephone": {
       "n": 288,
-      "pct": 11.2
+      "pct": 10.4
     },
     "Generic agency email": {
       "n": 289,
-      "pct": 11.3
+      "pct": 10.4
     },
     "ABN confidence": {
-      "exact": 1122,
-      "high": 71,
-      "blank": 1367
+      "exact": 1283,
+      "high": 73,
+      "blank": 1416
     }
   }
 }

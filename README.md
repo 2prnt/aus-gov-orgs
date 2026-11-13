@@ -10,7 +10,7 @@ The aim is a single, source-cited table analogous to the Commonwealth Department
 
 ## Files
 
-- `data/organisations.csv` — all 2,560 entity rows (the Organisations tab)
+- `data/organisations.csv` — all 2,772 entity rows (the Organisations tab)
 - `data/sources.csv` — one row per source, plus the ABR bulk extract and a combined total row (the Sources tab)
 - `data/by-jurisdiction/` — the same entities split into one CSV per jurisdiction
 - `data/enrichment_report.json` — machine-readable fill rates per column per jurisdiction
@@ -18,6 +18,7 @@ The aim is a single, source-cited table analogous to the Commonwealth Department
 - `scripts/enrich.py` — map the AGOR schema, attach source-provided fields, match ABNs from the ABR bulk extract, and rewrite the published CSVs
 - `icons/` — one icon per organisation (see [Icons](#icons))
 - `scripts/wikidata_sites.py`, `fetch_icons.py`, `fetch_icons_deep.py`, `fetch_big_fallbacks.py`, `build_icons.py` — collect the icons
+- `scripts/companies_data.py`, `add_companies.py`, `scan_abr_companies.py`, `apply_companies.py`, `finalize_companies.py` — add state/territory government-owned companies and subsidiaries (see [Government-owned companies](#government-owned-companies))
 - `scripts/extract_abr.py` — stream the data.gov.au ABN Bulk Extract ZIPs into a compact government-entity JSONL used by `enrich.py`
 
 ## Schema
@@ -32,7 +33,7 @@ The published table uses the 36 AGOR columns as the unified schema, plus jurisdi
 | Title | Entity name as given in the source, lightly normalised (whitespace and typography only) |
 | Portfolio | Portfolio, parent department or responsible minister where the source provides one |
 | Classification | Classification from the source (AGOR classification, GSF class, VPSC employer type / sheet group, GFS sector, AAO administrative unit, and so on) |
-| Type of Body | AGOR type of body (Commonwealth) or VPSC Public Sector Body Type (Victoria) |
+| Type of Body | AGOR type of body (Commonwealth), VPSC Public Sector Body Type (Victoria), or for the government-owned companies added in November 2026 a label such as `Government owned corporation`, `State-owned company`, `Government Business Enterprise`, `Government Trading Enterprise` or `Subsidiary of …` |
 | GFS Sector Classification | AGOR GFS class, or SA Budget Appendix D / similar GFS grouping where the source uses those terms |
 | Materiality … Budget Documentation | Remaining AGOR columns, populated for Commonwealth rows from the AGOR CSV; otherwise blank unless a state/territory source provides a clear equivalent |
 | Established By / Under | AGOR established-by code; set to `Act / Regulation` for NSW GSF agencies whose source legislation field names an Act or Regulation |
@@ -55,15 +56,15 @@ Within a jurisdiction, duplicate names from overlapping sources were collapsed, 
 | Jurisdiction | Rows |
 | --- | ---: |
 | Commonwealth | 1,372 |
-| NSW | 404 |
-| Victoria | 258 |
-| Queensland | 28 |
-| WA | 290 |
+| NSW | 406 |
+| Victoria | 270 |
+| Queensland | 182 |
+| WA | 296 |
 | SA | 115 |
-| Tasmania | 31 |
-| ACT | 35 |
-| NT | 27 |
-| **Total** | **2,560** |
+| Tasmania | 61 |
+| ACT | 39 |
+| NT | 31 |
+| **Total** | **2,772** |
 
 WA includes **146 local governments** listed in Schedule 1 of the Public Sector Management Act 1994, because they appear in the Public Sector Commission mailing list. Filter `Classification` to `Schedule 1 – Local government` to exclude them. Those councils have telephone and CEO email in the source file but no website or street address, which is why WA website and head-office fill rates are about 49%.
 
@@ -74,28 +75,28 @@ Percentages are the share of rows in that jurisdiction with a non-blank value. A
 | Jurisdiction | Rows | ABN | Website | Portfolio | Classification | Type of Body | Legislation / established under | Head office address | Accountable authority | Telephone | Agency email |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Commonwealth | 1,372 | 35.6% | 59.3% | 100.0% | 100.0% | 100.0% | 50.6% | 64.9% | 0.0% | 0.0% | 0.0% |
-| NSW | 404 | 34.9% | 0.0% | 100.0% | 100.0% | 0.0% | 100.0% | 0.0% | 100.0% | 0.0% | 0.0% |
-| Victoria | 258 | 62.8% | 0.0% | 100.0% | 100.0% | 100.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% |
-| Queensland | 28 | 92.9% | 89.3% | 100.0% | 100.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% |
-| WA | 290 | 80.7% | 49.3% | 0.0% | 100.0% | 0.0% | 0.0% | 49.3% | 0.0% | 99.3% | 99.7% |
+| NSW | 406 | 34.7% | 0.0% | 99.5% | 100.0% | 0.5% | 99.5% | 0.0% | 99.5% | 0.0% | 0.0% |
+| Victoria | 270 | 62.2% | 1.9% | 100.0% | 100.0% | 100.0% | 1.9% | 0.0% | 0.0% | 0.0% | 0.0% |
+| Queensland | 182 | 82.4% | 25.3% | 15.4% | 47.3% | 84.6% | 84.6% | 0.0% | 0.0% | 0.0% | 0.0% |
+| WA | 296 | 80.7% | 48.6% | 0.0% | 100.0% | 2.0% | 1.7% | 48.3% | 0.0% | 97.3% | 97.6% |
 | SA | 115 | 67.0% | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% |
-| Tasmania | 31 | 67.7% | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% |
-| ACT | 35 | 51.4% | 100.0% | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% |
-| NT | 27 | 96.3% | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% |
-| **All** | **2,560** | **46.6%** | **39.7%** | **80.5%** | **100.0%** | **63.7%** | **42.9%** | **40.4%** | **15.8%** | **11.2%** | **11.3%** |
+| Tasmania | 61 | 70.5% | 23.0% | 0.0% | 100.0% | 49.2% | 49.2% | 0.0% | 0.0% | 0.0% | 0.0% |
+| ACT | 39 | 51.3% | 94.9% | 0.0% | 100.0% | 10.3% | 5.1% | 0.0% | 0.0% | 0.0% | 0.0% |
+| NT | 31 | 96.8% | 9.7% | 0.0% | 100.0% | 12.9% | 12.9% | 0.0% | 0.0% | 0.0% | 0.0% |
+| **All** | **2,772** | **48.9%** | **38.3%** | **74.8%** | **96.5%** | **66.5%** | **46.8%** | **37.3%** | **14.6%** | **10.4%** | **10.4%** |
 
 | Jurisdiction | ABN exact | ABN high | ABN blank |
 | --- | ---: | ---: | ---: |
 | Commonwealth | 488 | 0 | 884 |
-| NSW | 135 | 6 | 263 |
-| Victoria | 141 | 21 | 96 |
-| Queensland | 24 | 2 | 2 |
-| WA | 220 | 14 | 56 |
+| NSW | 135 | 6 | 265 |
+| Victoria | 147 | 21 | 102 |
+| Queensland | 147 | 3 | 32 |
+| WA | 225 | 14 | 57 |
 | SA | 73 | 4 | 38 |
-| Tasmania | 21 | 0 | 10 |
-| ACT | 16 | 2 | 17 |
-| NT | 4 | 22 | 1 |
-| **All** | 1,122 | 71 | 1,367 |
+| Tasmania | 42 | 1 | 18 |
+| ACT | 18 | 2 | 19 |
+| NT | 8 | 22 | 1 |
+| **All** | 1,283 | 73 | 1,416 |
 
 Commonwealth ABN (35.6%) and website (59.3%) fill rates are exactly those of the AGOR 30 September 2026 CSV — they were copied through, not re-looked-up.
 
@@ -168,9 +169,43 @@ Websites were **not** guessed from email domains, web search, or unofficial dire
 | Tasmania | [Tasmanian State Service Careers – Our agencies](https://www.tas.gov.au/jobs/work-with-us/about-us/our-agencies) | 7 May 2026 | HTML | 4 |
 | ACT | [Directorates and agencies](https://www.act.gov.au/directorates-and-agencies) | 23 April 2026 | HTML | 35 |
 | NT | [Administrative Arrangements Order 2026, Schedule 1](https://legislation.nt.gov.au/api/sitecore/Act/PDF?id=11575) (commenced and gazetted S41 on 1 June 2026) | 1 June 2026 | PDF | 27 |
+| NSW | [NSW Report on the State Finances 2024-25, Total State Sector Accounts Note 36 Controlled Entities](https://www.nsw.gov.au/sites/default/files/noindex/2025-11/report-on-the-state-finances-2024-25.pdf) (government-owned companies, added November 2026) | November 2025 | PDF | 2 |
+| Victoria | [Victoria 2024-25 Financial Report, Note 8.8 Controlled entities](https://www.dtf.vic.gov.au/sites/default/files/2025-10/2024-25-Financial-Report.pdf) (government-owned companies, added November 2026) | October 2025 | PDF | 12 |
+| Queensland | [Queensland Treasury – Government-owned corporations (list of GOCs)](https://www.treasury.qld.gov.au/policies-and-programs/economy/government-owned-corporations/) (government-owned companies, added November 2026) | 2026 | HTML | 11 |
+| Queensland | [Queensland Audit Office – State entities 2025 (Report 11: 2025–26), Appendices F and I](https://www.parliament.qld.gov.au/Work-of-the-Assembly/Tabled-Papers/docs/5826T0321/5826t321.pdf) (government-owned companies, added November 2026) | 2026 | PDF | 143 |
+| WA | [WA Office of the Auditor General – State Government 2025 Financial Audit Results (Report 6), Appendix 1](https://audit.wa.gov.au/wp-content/uploads/2025/12/Report-6-State-Government-2025-Financial-Audit-Results.pdf) (government-owned companies, added November 2026) | December 2025 | PDF | 6 |
+| Tasmania | [Treasury and Finance Tasmania – Tasmanian Government Businesses](https://www.treasury.tas.gov.au/government-businesses/tasmanian-government-businesses) (government-owned companies, added November 2026) | 2026 | HTML | 12 |
+| Tasmania | [Hydro Tasmania Annual Report 2024-25, Note 29 Controlled entities](https://www.hydro.com.au/sites/default/files/2026-01/hydro-tasmania-annual-report-2025.pdf) (government-owned companies, added November 2026) | 2025 | PDF | 16 |
+| Tasmania | [TasPorts Annual Report 2024–25, controlled entities](https://tasports.com.au/volumes/documents/Annual-Reports/TasPorts-Annual-Report-2024-2025.pdf) (government-owned companies, added November 2026) | 2025 | PDF | 1 |
+| ACT | [Icon Water – Who are we](https://www.iconwater.com.au/about-us/who-are-we) (government-owned companies, added November 2026) | 2026 | HTML | 4 |
+| NT | [Power and Water Corporation – About us; Territory Generation and Jacana Energy annual reports](https://www.powerwater.com.au/about) (government-owned companies, added November 2026) | 2026 | HTML | 4 |
 | All | [ABR ABN Bulk Extract](https://data.gov.au/data/dataset/5bd7fcab-e315-42cb-8daf-50b7efc2027e) (11 November 2026; parts [1–10](https://data.gov.au/data/dataset/5bd7fcab-e315-42cb-8daf-50b7efc2027e/resource/0ae4d427-6fa8-4d40-8e76-c6909b5a071b) and [11–20](https://data.gov.au/data/dataset/5bd7fcab-e315-42cb-8daf-50b7efc2027e/resource/635fcb95-7864-4509-9fa7-a62a6e32b62d)) | 11 November 2026 | XML (ZIP) | (ABN lookup only; not a row source) |
 
 Row counts in the table above are rows remaining in `organisations.csv` after deduplication, attributed to the source that was kept.
+
+## Government-owned companies
+
+In November 2026, 212 state and territory government-owned companies, GOCs, state-owned corporations, GBEs/GTEs and their controlled subsidiaries (including Pty Ltd companies) were added from official lists. They were deduplicated against the existing rows using normalised names (case, punctuation, `Pty`/`Ltd`/`Limited`, `trading as` and bracketed short names), plus a hand check of near-matches. Most NSW, Victorian and SA statutory corporations and SOCs were already present from the GSF list, the VPSC list and SA Budget Appendix D, so only the missing ones were added.
+
+| Jurisdiction | Added | Examples |
+| --- | ---: | --- |
+| NSW | 2 | Newcastle Port Corporation, Residual Transport Corporation |
+| Victoria | 12 | SEC Infrastructure Pty Ltd, SEC Energy Pty Ltd, Breakthrough Victoria Pty Ltd, Launch Victoria Ltd, Melbourne Port Lessor Pty Ltd, Homes Victoria |
+| Queensland | 154 | CS Energy Limited, Stanwell Corporation Limited, Energy Queensland Limited (Energex Limited, Ergon Energy Corporation Limited, Yurika Pty Ltd), QIC Limited and its controlled companies, Queensland Rail Limited, Screen Queensland Pty Ltd |
+| WA | 6 | Flat Rocks Wind Farm Stage 2 Pty Ltd (Synergy), Hedland Maritime Initiative Pty Ltd (Pilbara Ports), Edith Cowan Accommodation Holdings Pty Ltd, Perth International Arts Festival Ltd |
+| SA | 0 | none (all SA government businesses were already present from Budget Appendix D) |
+| Tasmania | 30 | Hydro-Electric Corporation (Hydro Tasmania), Momentum Energy Pty Limited, Aurora Energy Pty Ltd, TasNetworks, TasPorts, TasRail, TT-Line Company Pty Ltd, Bass Island Line Pty Ltd |
+| ACT | 4 | Icon Distribution Investments Limited, Icon Retail Investments Limited, the ActewAGL Distribution (Evoenergy) and Retail partnerships |
+| NT | 4 | Power and Water Corporation, Territory Generation, Jacana Energy, Indigenous Essential Services Pty Ltd |
+
+Rules used:
+
+- `Source name`, `Source URL` and `Source date` cite the list each company came from (see [Sources](#sources)). `Parent Organisation` names the owning GOC, GBE, department or statutory body where the source gives it. `Portfolio` is filled where the source groups entities by department (Victoria). `GFS Sector Classification` is PNFC, PFC or GGS where the source gives the sector.
+- Queensland: the 11 GOCs come from Queensland Treasury's GOC list. Their companies and other controlled companies come from Queensland Audit Office *State entities 2025*, Appendices F and I. These were excluded: trusts, funds, unincorporated projects, insurance cells, "as trustee" entries, and the two entities the QAO footnotes as managed but not controlled (Queensland Titles Registry Pty Ltd, Registry Finance Pty Ltd). Companies in the "Entities managed by QIC Limited" block have the type `Company managed and controlled by QIC Limited`.
+- ABN: the ABR bulk extract was re-scanned across all entity types, because the earlier government-only extract skips Australian Private and Public Companies. An ABN is filled only from a single current (status ACT) ABR record whose legal or other name equals the company name, after normalising Pty/Proprietary and Ltd/Limited. Company names are unique nationally, so for a `Pty Ltd`/`Limited` name the record may be registered in another state. Some QIC and other subsidiaries have only a cancelled ABN, so they are left blank.
+- Website: filled only for a well-known official domain that loaded during the check. Redirects were followed, so for example Dairy Food Safety Victoria and PrimeSafe now point to safefood.vic.gov.au. Subsidiaries mostly have no website and use the parent's icon.
+
+Gaps: WA and NT do not publish a consolidated list of GTE/GOC subsidiaries. WA is limited to the GTE Act list and the companies the Auditor General audits directly. NT is limited to the three GOCs and Indigenous Essential Services. Subsidiaries of WA GTEs that the Auditor General does not audit separately, and minority joint ventures, are not included. Universities' controlled companies are only included where the source lists them (ECU in WA). Hydro Tasmania's South African and Indian subsidiaries are included because they are controlled entities in its annual report.
 
 ## Known coverage gaps
 
@@ -187,8 +222,8 @@ Row counts in the table above are rows remaining in `organisations.csv` after de
 Every organisation has a small square PNG icon for use on profile pages, named after the organisation:
 `icons/png/<slug>.png`, where the slug is a jurisdiction prefix (`cth`, `nsw`, `vic`, `qld`, `wa`, `sa`, `tas`, `act`, `nt`) plus the kebab-case title, for example `icons/png/cth-australian-taxation-office.png`. Slugs are unique (a `-2` suffix is added for the few repeated titles).
 
-- `icons/png/` — one PNG per organisation (2,560 files, 653 distinct images), padded with transparency to a square. Own-site icons are scaled down to at most 128 px; fallback logos are 128–256 px.
-- `icons/svg/` — an SVG copy where the site publishes an SVG icon or logo (135 files). Defence-fallback rows get the "Australian Government | Defence" crest SVG from defence.gov.au.
+- `icons/png/` — one PNG per organisation (2,772 files, 699 distinct images), padded with transparency to a square. Own-site icons are scaled down to at most 128 px; fallback logos are 128–256 px.
+- `icons/svg/` — an SVG copy where the site publishes an SVG icon or logo (136 files). Defence-fallback rows get the "Australian Government | Defence" crest SVG from defence.gov.au.
 - `icons/manifest.csv` — slug, title, jurisdiction, website, icon file, SVG file, icon source URL, method, notes, width, height, original size and SHA-256.
 - `icons/aus-gov-orgs-icons-png.zip` — all PNGs plus the manifest in one download.
 - `data/organisations.csv` and `data/by-jurisdiction/*.csv` include `Icon file`, `Icon source URL` and `Icon method`.
@@ -209,15 +244,15 @@ Method, in order of preference:
 | Jurisdiction | `own-site` | `own-site-wikidata` | `google-s2` | `defence-fallback` | `parent` | `fallback-jurisdiction` | Total |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | Commonwealth | 670 | 2 | 30 | 27 | 548 | 95 | 1,372 |
-| NSW | 0 | 46 | 5 | 0 | 160 | 193 | 404 |
-| Victoria | 0 | 44 | 1 | 0 | 132 | 81 | 258 |
-| Queensland | 20 | 1 | 3 | 0 | 0 | 4 | 28 |
-| WA | 125 | 116 | 13 | 0 | 0 | 36 | 290 |
+| NSW | 0 | 46 | 5 | 0 | 160 | 195 | 406 |
+| Victoria | 5 | 44 | 1 | 0 | 138 | 82 | 270 |
+| Queensland | 39 | 1 | 4 | 0 | 69 | 69 | 182 |
+| WA | 126 | 116 | 13 | 0 | 3 | 38 | 296 |
 | SA | 0 | 16 | 1 | 0 | 0 | 98 | 115 |
-| Tasmania | 0 | 7 | 0 | 0 | 0 | 24 | 31 |
-| ACT | 32 | 0 | 0 | 0 | 0 | 3 | 35 |
-| NT | 0 | 8 | 1 | 0 | 0 | 18 | 27 |
-| **All** | 847 | 240 | 54 | 27 | 840 | 552 | 2,560 |
+| Tasmania | 14 | 7 | 0 | 0 | 16 | 24 | 61 |
+| ACT | 34 | 0 | 0 | 0 | 2 | 3 | 39 |
+| NT | 3 | 8 | 1 | 0 | 0 | 19 | 31 |
+| **All** | 891 | 240 | 55 | 27 | 936 | 623 | 2,772 |
 
 No logo was drawn or generated; every file comes from an official website (or Google's cache of one, where marked). The jurisdiction and Defence logos were rasterised or trimmed from the official artwork only. Icons and logos remain the property of the respective organisations and governments.
 

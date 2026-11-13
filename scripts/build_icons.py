@@ -102,6 +102,7 @@ def main():
     for i, v in res.items():
         own_by_title.setdefault((rows[i]["Jurisdiction"], norm(rows[i]["Title"])), v)
 
+    parent_of = {(r["Jurisdiction"], norm(r["Title"])): r["Parent Organisation"] for r in rows if r["Parent Organisation"]}
     # pass 2: fallbacks
     for i, r in enumerate(rows):
         if i in res: continue
@@ -110,9 +111,14 @@ def main():
         note = "site icon not retrievable" if site else "no website"
         if j == "Commonwealth" and "Veterans" not in port and (DEF_RE.search(port) or DEF_RE.search(parent) or DEF_RE.search(r["Title"])):
             res[i] = dict(site=site, host=good_fb("DEFENCE"), method="defence-fallback", note=note + "; Department of Defence"); continue
-        ph = good_fb(own_by_title[(j, norm(parent))]["hkey"]) if parent and (j, norm(parent)) in own_by_title else None
+        # walk up the parent chain (e.g. second-tier subsidiary -> subsidiary -> GOC)
+        ph = None; p = parent; seen = set()
+        while p and (j, norm(p)) not in seen and not ph:
+            seen.add((j, norm(p)))
+            ph = good_fb(own_by_title[(j, norm(p))]["hkey"]) if (j, norm(p)) in own_by_title else None
+            if not ph: p = parent_of.get((j, norm(p)), "")
         if ph:
-            res[i] = dict(site=site, host=ph, method="parent", note=note + "; parent: " + parent); continue
+            res[i] = dict(site=site, host=ph, method="parent", note=note + "; parent: " + p); continue
         hit = None
         for key, url in PORTFOLIO.get(j, []):
             if key.lower() in port.lower() and good_fb(url): hit = url; break
