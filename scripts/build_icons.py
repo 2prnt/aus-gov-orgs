@@ -1,0 +1,142 @@
+"""Stage 2: assign an icon to every organisation and write icons/ + CSV columns.
+
+Order: own website icon (listed Website Address, or official site from Wikidata)
+-> Defence logo for Defence-portfolio bodies -> parent organisation / portfolio
+department icon -> jurisdiction government icon. Every row gets a file.
+"""
+import csv, hashlib, json, re, shutil, unicodedata, zipfile
+from pathlib import Path
+from urllib.parse import urlparse
+from PIL import Image
+
+ROOT = Path(__file__).resolve().parent.parent
+WORK = Path("/workspace/icons_work"); CACHE = WORK / "cache"
+ICONS = ROOT / "icons"
+PREFIX = {"Commonwealth": "cth", "NSW": "nsw", "Victoria": "vic", "Queensland": "qld", "WA": "wa", "SA": "sa", "Tasmania": "tas", "ACT": "act", "NT": "nt"}
+JURIS = {"Commonwealth": "COA", "NSW": "https://www.nsw.gov.au/", "Victoria": "https://www.vic.gov.au/",
+         "Queensland": "https://www.qld.gov.au/", "WA": "https://www.wa.gov.au/", "SA": "https://www.sa.gov.au/",
+         "Tasmania": "https://www.tas.gov.au/", "ACT": "https://www.act.gov.au/", "NT": "https://nt.gov.au/"}
+DEFENCE = "https://www.defence.gov.au/"
+PORTFOLIO = {
+ "Commonwealth": [("Veterans", "https://www.dva.gov.au/"), ("Finance", "https://www.finance.gov.au/"), ("Infrastructure", "https://www.infrastructure.gov.au/"),
+   ("Industry", "https://www.industry.gov.au/"), ("Agriculture", "https://www.agriculture.gov.au/"),
+   ("Attorney", "https://www.ag.gov.au/"), ("Health", "https://www.health.gov.au/"), ("Treasury", "https://treasury.gov.au/"),
+   ("Climate", "https://www.dcceew.gov.au/"), ("Home Affairs", "https://www.homeaffairs.gov.au/"), ("Foreign Affairs", "https://www.dfat.gov.au/"),
+   ("Education", "https://www.education.gov.au/"), ("Employment", "https://www.dewr.gov.au/"), ("Social Services", "https://www.dss.gov.au/")],
+ "NSW": [("Health", "https://www.health.nsw.gov.au/"), ("Climate", "https://www.energy.nsw.gov.au/"), ("Communities and Justice", "https://www.dcj.nsw.gov.au/"),
+   ("Treasury", "https://www.treasury.nsw.gov.au/"), ("Primary Industries", "https://www.dpi.nsw.gov.au/"), ("Planning", "https://www.planning.nsw.gov.au/"),
+   ("Transport", "https://www.transport.nsw.gov.au/"), ("Education", "https://education.nsw.gov.au/")],
+ "Victoria": [("Health", "https://www.health.vic.gov.au/"), ("Energy, Environment", "https://www.deeca.vic.gov.au/"), ("Jobs, Skills", "https://djsir.vic.gov.au/"),
+   ("Justice", "https://www.justice.vic.gov.au/"), ("Treasury", "https://www.dtf.vic.gov.au/"), ("Transport", "https://www.transport.vic.gov.au/"),
+   ("Families", "https://www.dffh.vic.gov.au/"), ("Education", "https://www.education.vic.gov.au/")],
+}
+DEF_RE = re.compile(r"\b(Defence|Army|Navy|Air Force|ADF|RAAF|RAN|Military)\b")
+
+def slugify(s):
+    s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode().lower().replace("&", " and ").replace("'", "")
+    return re.sub(r"[^a-z0-9]+", "-", s).strip("-")[:90].rstrip("-")
+
+def host_root(u):
+    u = (u or "").strip()
+    if not u: return None
+    if "://" not in u: u = "http://" + u
+    p = urlparse(u)
+    return f"{p.scheme}://{p.netloc.lower()}/" if p.netloc else None
+
+def norm(s): return re.sub(r"[^a-z0-9]+", " ", (s or "").lower()).replace(" the ", " ").strip()
+
+def main():
+    rows = list(csv.DictReader(open(ROOT / "data/organisations.csv", encoding="utf-8")))
+    hosts = json.loads((WORK / "hosts.json").read_text())
+    wd = json.loads((WORK / "wikidata_sites.json").read_text())
+    # find google-s2 default-globe hash(es) to reject
+    s2_counts = {}
+    for v in hosts.values():
+        if v.get("method") == "google-s2": s2_counts[v["s2_sha"]] = s2_counts.get(v["s2_sha"], 0) + 1
+    s2_default = {h for h, n in s2_counts.items() if n >= 3}
+    # Australian Government coat of arms (federal logo), as published by agriculture.gov.au
+    hosts["COA"] = {"ok": True, "method": "own-site", "file": "_cth_coat_of_arms.png", "side": 128, "orig": 512,
+                    "src": "https://www.agriculture.gov.au/themes/custom/awe/images/australian-government-logo-512.png"}
+    hosts["DEFENCE"] = dict(hosts["https://www.defence.gov.au/"], svg="_defence_crest_horizontal.svg",
+                    svg_src="https://www.defence.gov.au/themes/custom/custom/defence8ui/images/gov-crest-horizontal.svg")
+    def good(url):
+        h = hosts.get(url) if url else None
+        if (not h or not h.get("ok") or h.get("method") == "google-s2") and url and url.startswith("http"):
+            alt = ("https://" + url[7:]) if url.startswith("http://") else ("http://" + url[8:])
+            a = hosts.get(alt)
+            if a and a.get("ok") and (a.get("method") == "own-site" or not h or not h.get("ok")): h = a
+        if not h or not h.get("ok"): return None
+        if h.get("method") == "google-s2" and h.get("s2_sha") in s2_default: return None
+        return h
+    for k in list(hosts):
+        if not good(k): pass
+
+    # pass 1: own icons
+    res = {}
+    for i, r in enumerate(rows):
+        site = r["Website Address"].strip(); how = "own-site"
+        if not site:
+            w = wd.get(r["Id"] + "|" + r["Title"])
+            if w: site, how = w["website"], "own-site-wikidata"
+        h = good(host_root(site))
+        if h:
+            res[i] = dict(site=site, host=h, method=how if h["method"] == "own-site" else "google-s2", note="")
+    own_by_title = {}
+    for i, v in res.items():
+        own_by_title.setdefault((rows[i]["Jurisdiction"], norm(rows[i]["Title"])), v)
+
+    # pass 2: fallbacks
+    for i, r in enumerate(rows):
+        if i in res: continue
+        j = r["Jurisdiction"]; port = r["Portfolio"]; parent = r["Parent Organisation"]
+        site = r["Website Address"].strip() or ((wd.get(r["Id"] + "|" + r["Title"]) or {}).get("website", ""))
+        note = "site icon not retrievable" if site else "no website"
+        if j == "Commonwealth" and "Veterans" not in port and (DEF_RE.search(port) or DEF_RE.search(parent) or DEF_RE.search(r["Title"])):
+            res[i] = dict(site=site, host=good("DEFENCE"), method="defence-fallback", note=note + "; Department of Defence"); continue
+        if parent and (j, norm(parent)) in own_by_title:
+            res[i] = dict(site=site, host=own_by_title[(j, norm(parent))]["host"], method="parent", note=note + "; parent: " + parent); continue
+        hit = None
+        for key, url in PORTFOLIO.get(j, []):
+            if key.lower() in port.lower() and good(url): hit = url; break
+        if hit:
+            res[i] = dict(site=site, host=good(hit), method="parent", note=note + "; portfolio: " + port); continue
+        res[i] = dict(site=site, host=good(JURIS[j]), method="fallback-jurisdiction", note=note); assert res[i]["host"], j
+
+    # write files
+    if ICONS.exists(): shutil.rmtree(ICONS)
+    (ICONS / "png").mkdir(parents=True); (ICONS / "svg").mkdir()
+    used = set(); manifest = []
+    for i, r in enumerate(rows):
+        base = PREFIX[r["Jurisdiction"]] + "-" + slugify(r["Title"]); slug = base; n = 2
+        while slug in used: slug = f"{base}-{n}"; n += 1
+        used.add(slug)
+        v = res[i]; h = v["host"]
+        src_png = CACHE / h["file"]; data = src_png.read_bytes()
+        (ICONS / "png" / f"{slug}.png").write_bytes(data)
+        svg_rel = ""
+        if h.get("svg") and v["method"] in ("own-site", "own-site-wikidata", "defence-fallback"):
+            shutil.copyfile(CACHE / h["svg"], ICONS / "svg" / f"{slug}.svg"); svg_rel = f"icons/svg/{slug}.svg"
+        r["Icon file"] = f"icons/png/{slug}.png"; r["Icon source URL"] = h["src"]; r["Icon method"] = v["method"]
+        manifest.append({"slug": slug, "org title": r["Title"], "jurisdiction": r["Jurisdiction"], "website": v["site"],
+                         "icon file": r["Icon file"], "svg file": svg_rel, "icon source URL": h["src"], "method": v["method"],
+                         "notes": v["note"], "width": h["side"], "height": h["side"], "original size": h.get("orig", ""),
+                         "sha256": hashlib.sha256(data).hexdigest()})
+    cols = list(rows[0].keys())
+    for p in [ROOT / "data/organisations.csv"]:
+        with open(p, "w", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=cols); w.writeheader(); w.writerows(rows)
+    fname = {"Commonwealth": "commonwealth", "NSW": "nsw", "Victoria": "victoria", "Queensland": "queensland", "WA": "wa", "SA": "sa", "Tasmania": "tasmania", "ACT": "act", "NT": "nt"}
+    for j, fn in fname.items():
+        with open(ROOT / "data/by-jurisdiction" / f"{fn}.csv", "w", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=cols); w.writeheader(); w.writerows([r for r in rows if r["Jurisdiction"] == j])
+    with open(ICONS / "manifest.csv", "w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=list(manifest[0].keys())); w.writeheader(); w.writerows(manifest)
+    with zipfile.ZipFile(ICONS / "aus-gov-orgs-icons-png.zip", "w", zipfile.ZIP_DEFLATED) as z:
+        for m in manifest: z.write(ROOT / m["icon file"], m["icon file"].split("/", 1)[1])
+        z.write(ICONS / "manifest.csv", "manifest.csv")
+    from collections import Counter
+    print(Counter(m["method"] for m in manifest))
+    for j in PREFIX: print(j, Counter(m["method"] for m in manifest if m["jurisdiction"] == j))
+    print("svg", sum(1 for m in manifest if m["svg file"]), "unique pngs", len({m["sha256"] for m in manifest}))
+
+if __name__ == "__main__": main()

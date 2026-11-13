@@ -1,0 +1,69 @@
+<svg width="322" height="322" viewBox="0 0 322 322" fill="none" xmlns="http://www.w3.org/2000/svg">
+<style>
+
+	#logo-group {
+		transform-origin: center;
+		transform: scale(0.8);
+	}
+	
+	@media (prefers-color-scheme: light) {
+	
+		#logo-group {
+			transform: scale(1);
+		}
+	
+		.logo-element {
+			fill: black;
+		}
+		
+		#background {
+			fill: transparent;
+		}
+	}
+
+	@media (prefers-color-scheme: dark) {
+	
+		#logo-group {
+			transform: scale(1);
+		}
+	
+	  .logo-element {
+		  fill: white;
+	  }
+	  
+	  #background {
+		  fill: transparent;
+	  }
+	}
+  </style>
+<rect id="background" width="322" height="322" fill="black"/>
+<g id="logo-group" clip-path="url(#clip0_270_98)">
+<path class="logo-element" d="M37.8992 9.76399V53.5612L47.9528 47.7849V3.98773L37.8992 9.76399Z" fill="white"/>
+<path class="logo-element" d="M83.1768 271.962L99.1744 281.175L143.425 255.657L127.427 246.444L83.1768 271.962Z" fill="white"/>
+<path class="logo-element" d="M74.3708 277.007L30.1205 302.525L46.0448 311.738L90.295 286.293L74.3708 277.007Z" fill="white"/>
+<path class="logo-element" d="M141.737 275.106L157.734 284.319L175.42 274.082L159.422 264.87L141.737 275.106Z" fill="white"/>
+<path class="logo-element" d="M79.8011 310.787L95.7987 320L148.855 289.364L132.857 280.151L79.8011 310.787Z" fill="white"/>
+<path class="logo-element" d="M152.084 249.807L184.299 268.379V244.47L152.084 225.971V249.807Z" fill="white"/>
+<path class="logo-element" d="M92.1295 2.89091V20.8777L115.025 34.1119V16.1251L92.1295 2.89091Z" fill="white"/>
+<path class="logo-element" d="M184.446 55.9739L126.84 22.7787V40.7655L184.446 73.9607V55.9739Z" fill="white"/>
+<path class="logo-element" d="M313.381 136.915L288.504 122.584V133.99L313.381 148.321V136.915Z" fill="white"/>
+<path class="logo-element" d="M280.211 117.758L270.818 112.42V123.681L280.211 129.164V117.758Z" fill="white"/>
+<path class="logo-element" d="M208.075 159.8L277.276 199.649V188.243L208.075 148.321V159.8Z" fill="white"/>
+<path class="logo-element" d="M230.751 208.935L259.224 225.313V213.98L230.751 197.529V208.935Z" fill="white"/>
+<path class="logo-element" d="M261.866 143.349L239.41 130.334V141.74L261.866 154.682V143.349Z" fill="white"/>
+<path class="logo-element" d="M270.158 148.101V159.508L321.747 189.193V177.787L270.158 148.101Z" fill="white"/>
+<path class="logo-element" d="M92.1296 129.164L219.01 202.281V184.222L92.1296 111.104V93.0444L184.226 146.127V128.141L92.1296 75.0576V57.5826V56.9977L184.226 110.081V92.0208L92.1296 38.9377V22.4864L71.1419 34.6238V139.839L63.877 144.08V181.516L92.1296 165.211L227.669 243.373H227.742V225.386L92.1296 147.224V129.164Z" fill="white"/>
+<path class="logo-element" d="M58.0063 259.459L88.6072 241.838L95.9455 246.006L111.209 237.231L82.8099 220.853L92.203 215.443L92.1296 215.369L131.903 238.255V214.419L111.943 202.94V191.753L92.1296 180.419L71.1419 192.484V210.032L63.8769 214.2V231.748L47.9527 240.887V200.307L32.0285 209.447V250.173L37.0186 247.322L58.0063 259.459Z" fill="white"/>
+<path class="logo-element" d="M47.9528 108.984L32.1019 118.124V199.284L47.9528 190.144V108.984Z" fill="white"/>
+<path class="logo-element" d="M47.9528 55.0966L37.8992 60.8729V104.597L47.9528 98.8207V55.0966Z" fill="white"/>
+<path class="logo-element" d="M0.253418 248.053V268.599L21.3879 280.736L27.5521 277.08L34.8904 281.321L50.1542 272.474L21.7548 256.096L16.1776 259.313V238.913L0.253418 248.053Z" fill="white"/>
+<path class="logo-element" d="M0.253418 166.893V237.963L16.1776 228.75V157.753L0.253418 166.893Z" fill="white"/>
+<path class="logo-element" d="M6.12408 87.78V153.366L16.1776 147.59V82.0037L6.12408 87.78Z" fill="white"/>
+<path class="logo-element" d="M6.12408 58.6062V80.4682L16.1776 74.6919V52.8299L6.12408 58.6062Z" fill="white"/>
+</g>
+<defs>
+<clipPath id="clip0_270_98">
+<rect width="321.493" height="317.109" fill="white" transform="translate(0.253418 2.89091)"/>
+</clipPath>
+</defs>
+</svg>
