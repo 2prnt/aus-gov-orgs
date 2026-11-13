@@ -88,12 +88,20 @@ def main():
     for k in list(hosts):
         if not good(k): pass
 
+    from describe import host_ok, wd_conflict
+    def wdget(r):
+        """Wikidata site for a row; state rows share a title-only key, so check host and description jurisdiction."""
+        w = wd.get(r["Id"] + "|" + r["Title"])
+        if not w: return None
+        if not host_ok(w.get("website", ""), r["Jurisdiction"]): return None
+        if wd_conflict(w.get("description", ""), r["Jurisdiction"]): return None
+        return w
     # pass 1: own icons
     res = {}
     for i, r in enumerate(rows):
         site = r["Website Address"].strip(); how = "own-site"
         if not site:
-            w = wd.get(r["Id"] + "|" + r["Title"])
+            w = wdget(r)
             if w: site, how = w["website"], "own-site-wikidata"
         h = good(host_root(site))
         if h:
@@ -107,7 +115,7 @@ def main():
     for i, r in enumerate(rows):
         if i in res: continue
         j = r["Jurisdiction"]; port = r["Portfolio"]; parent = r["Parent Organisation"]
-        site = r["Website Address"].strip() or ((wd.get(r["Id"] + "|" + r["Title"]) or {}).get("website", ""))
+        site = r["Website Address"].strip() or ((wdget(r) or {}).get("website", ""))
         note = "site icon not retrievable" if site else "no website"
         if j == "Commonwealth" and "Veterans" not in port and (DEF_RE.search(port) or DEF_RE.search(parent) or DEF_RE.search(r["Title"])):
             res[i] = dict(site=site, host=good_fb("DEFENCE"), method="defence-fallback", note=note + "; Department of Defence"); continue

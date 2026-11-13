@@ -20,6 +20,7 @@ The aim is a single, source-cited table analogous to the Commonwealth Department
 - `scripts/wikidata_sites.py`, `fetch_icons.py`, `fetch_icons_deep.py`, `fetch_big_fallbacks.py`, `build_icons.py` — collect the icons
 - `scripts/companies_data.py`, `add_companies.py`, `scan_abr_companies.py`, `apply_companies.py`, `finalize_companies.py` — add state/territory government-owned companies and subsidiaries (see [Government-owned companies](#government-owned-companies))
 - `scripts/abr_types_classify.py`, `scan_abr_dates.py`, `add_abr_types.py` and `data/abr_types_review.csv` (manual keep/remove decisions) — add government bodies from the ABR government entity types (see [ABR government entity types](#abr-government-entity-types))
+- `scripts/describe.py`, `scan_abr_addr.py` and `scripts/descriptions/` — descriptions and other AGOR columns from official directories, sites and Wikidata (see [Descriptions and other fields](#descriptions-and-other-fields)); `data/fill_before_after.json` holds the before/after counts
 - `scripts/extract_abr.py` — stream the data.gov.au ABN Bulk Extract ZIPs into a compact government-entity JSONL used by `enrich.py`
 
 ## Schema
@@ -37,6 +38,8 @@ The published table uses the 36 AGOR columns as the unified schema, plus jurisdi
 | Type of Body | AGOR type of body (Commonwealth), VPSC Public Sector Body Type (Victoria), or for the government-owned companies added in November 2026 a label such as `Government owned corporation`, `State-owned company`, `Government Business Enterprise`, `Government Trading Enterprise` or `Subsidiary of …` |
 | GFS Sector Classification | AGOR GFS class, or SA Budget Appendix D / similar GFS grouping where the source uses those terms |
 | Materiality … Budget Documentation | Remaining AGOR columns, populated for Commonwealth rows from the AGOR CSV; otherwise blank unless a state/territory source provides a clear equivalent |
+| Description | AGOR description (Commonwealth); for other rows a 1–3 sentence statement of purpose/functions from an official source (see [Descriptions and other fields](#descriptions-and-other-fields)) |
+| Description source URL, Description method | Page the description came from, and `existing-AGOR`, `source-list`, `official-directory`, `official-site` or `wikidata` |
 | Established By / Under | AGOR established-by code; set to `Act / Regulation` for NSW GSF agencies whose source legislation field names an Act or Regulation |
 | Established by/Under More Info | AGOR instrument text, or the NSW GSF “Relevant legislation of entity” field |
 | ABN | Australian Business Number, formatted `XX XXX XXX XXX`. Commonwealth: copied from AGOR. Other jurisdictions: official source ABN only after ABR verification, or a conservative ABR name match (see Methods) |
@@ -46,6 +49,8 @@ The published table uses the 36 AGOR columns as the unified schema, plus jurisdi
 | Accountable Authority | NSW GSF accountable authority (no AGOR equivalent) |
 | Contact telephone | WA mailing-list telephone (no AGOR equivalent) |
 | Generic agency email | WA mailing-list generic agency or CEO email (no AGOR equivalent) |
+| ABR note | For rows added from the ABR government entity types: ABR last-updated date, GST status and review note |
+| Other fields source | For cells filled in the November 2026 column pass: which columns were filled from which official page (or the ABR) |
 | ABN match confidence | `exact`, `high`, or blank. Commonwealth ABNs supplied by AGOR are `exact`. ABR matches: `exact` when the normalised legal name is unique in the right state; `high` after conservative name variants, or when the match is an official ABR “other name” of a parent government ABN (see Methods) |
 
 Blank cells mean the source or lookup did not provide a confident value. Values were not invented.
@@ -76,15 +81,15 @@ Percentages are the share of rows in that jurisdiction with a non-blank value. A
 | Jurisdiction | Rows | ABN | Website | Portfolio | Classification | Type of Body | Legislation / established under | Head office address | Accountable authority | Telephone | Agency email |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Commonwealth | 1,377 | 35.8% | 59.0% | 99.6% | 100.0% | 99.6% | 50.4% | 64.6% | 0.0% | 0.0% | 0.0% |
-| NSW | 451 | 41.2% | 0.2% | 89.6% | 100.0% | 0.4% | 89.6% | 0.0% | 89.6% | 0.0% | 0.0% |
-| Victoria | 325 | 68.6% | 1.5% | 83.1% | 100.0% | 83.1% | 1.5% | 0.0% | 0.0% | 0.0% | 0.0% |
-| Queensland | 281 | 88.6% | 16.7% | 10.0% | 65.8% | 54.8% | 54.8% | 0.0% | 0.0% | 0.0% | 0.0% |
-| WA | 324 | 82.4% | 44.8% | 0.0% | 100.0% | 1.9% | 1.5% | 44.1% | 0.0% | 88.9% | 89.2% |
-| SA | 188 | 79.8% | 0.0% | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% |
-| Tasmania | 84 | 78.6% | 16.7% | 0.0% | 100.0% | 35.7% | 35.7% | 0.0% | 0.0% | 0.0% | 0.0% |
+| NSW | 451 | 41.2% | 29.7% | 92.0% | 100.0% | 0.4% | 90.2% | 13.5% | 89.6% | 23.5% | 7.8% |
+| Victoria | 325 | 68.6% | 11.7% | 83.1% | 100.0% | 83.1% | 1.5% | 0.0% | 0.0% | 0.0% | 0.0% |
+| Queensland | 281 | 88.6% | 19.2% | 10.0% | 65.8% | 54.8% | 56.6% | 17.4% | 0.0% | 22.4% | 15.3% |
+| WA | 324 | 82.4% | 57.4% | 16.4% | 100.0% | 1.9% | 2.5% | 44.4% | 0.0% | 89.8% | 89.8% |
+| SA | 188 | 79.8% | 6.9% | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% |
+| Tasmania | 84 | 78.6% | 19.0% | 0.0% | 100.0% | 35.7% | 35.7% | 0.0% | 0.0% | 0.0% | 0.0% |
 | ACT | 52 | 63.5% | 71.2% | 0.0% | 100.0% | 7.7% | 3.8% | 0.0% | 0.0% | 0.0% | 0.0% |
-| NT | 47 | 97.9% | 6.4% | 0.0% | 100.0% | 8.5% | 8.5% | 0.0% | 0.0% | 0.0% | 0.0% |
-| **All** | **3,129** | **54.7%** | **34.0%** | **66.3%** | **96.9%** | **58.9%** | **41.5%** | **33.0%** | **12.9%** | **9.2%** | **9.2%** |
+| NT | 47 | 97.9% | 8.5% | 0.0% | 100.0% | 8.5% | 8.5% | 0.0% | 0.0% | 0.0% | 0.0% |
+| **All** | **3,129** | **54.7%** | **41.4%** | **68.3%** | **96.9%** | **58.9%** | **41.8%** | **36.6%** | **12.9%** | **14.7%** | **11.8%** |
 
 | Jurisdiction | ABN exact | ABN high | ABN blank |
 | --- | ---: | ---: | ---: |
@@ -242,9 +247,9 @@ Rules (`scripts/add_abr_types.py`, applied in this order; the first matching rul
 - Sub-registrations and non-organisations are excluded by name pattern (`scripts/abr_types_classify.py`): government schools and kindergartens, school-type education/children's centres, Crown-land reserve, hall and rail-trail committees of management, Defence messes, units and cadet registrations, clubs/associations/societies, payroll/fund/trust-account, division/branch/staff/employing-office registrations, funds and schemes, emergency-service brigades/units, investment pools, historical inquiries/personal offices, ministers as corporations sole, and local-government bodies.
 - Dormant/historical records are excluded when the GST registration is cancelled, or the ABR record has not been updated since before 2010 and was never GST-registered, plus a hand-checked list of abolished or merged bodies (for example Workplace Authority, National Water Commission, Health Workforce Australia, RTA, State Rail Authority, the former TAFE NSW institutes, Rural Lands Protection Boards, COVID-19 Quarantine Victoria, Queensland Nursing Council).
 - Deduplication against existing rows: same ABN first; then the same normalised name in the same jurisdiction (legal name and ABR other names; case, punctuation, `the`, bracketed short names, `Pty`/`Ltd`, and inverted titles such as "Education, Department for"); then a conservative near-duplicate test (the significant words of one name contained in the other, at least two significant words); then `X - Y` / `X (Y)` sub-registrations of an existing body or department; then duplicates within the ABR set (most recently updated record kept).
-- Manual review (`data/abr_types_review.csv`): 33 questionable rows were checked against legislation, government sites and annual reports. 23 were removed (abolished, an internal unit, a school-type site or not a government body) and 10 were confirmed current; those 10 have the check recorded in `Description`, and three got an official website and icon (Riverina Winegrape Growers, Local Health Authorities Analytical Committee, Coexistence Queensland). A few same-body/different-name cases were matched by hand (for example Western Australian Mint → The Perth Mint).
+- Manual review (`data/abr_types_review.csv`): 33 questionable rows were checked against legislation, government sites and annual reports. 23 were removed (abolished, an internal unit, a school-type site or not a government body) and 10 were confirmed current; those 10 have the check recorded in `ABR note`, and three got an official website and icon (Riverina Winegrape Growers, Local Health Authorities Analytical Committee, Coexistence Queensland). A few same-body/different-name cases were matched by hand (for example Western Australian Mint → The Perth Mint).
 - Jurisdiction comes from the entity type (CG → Commonwealth; TG → ACT or NT by address state; SG → address state). Where a State body's name names a different state, the named state is used; 3 records with an unclear jurisdiction were excluded.
-- Fields: `Title` is the ABR legal name, lightly normalised (title case for all-caps names, acronyms kept). `Classification` is the ABR entity type. `ABN` (confidence `exact`), `Head Office State`, `Head Office Postcode` and `Country` come from the ABR. `Description` notes the ABR record's last-updated date, whether it is GST-registered, and that current status is not confirmed by an official agency list. Other fields are blank, and no websites were added (icons used Wikidata where an official site was found, otherwise the jurisdiction fallback).
+- Fields: `Title` is the ABR legal name, lightly normalised (title case for all-caps names, acronyms kept). `Classification` is the ABR entity type. `ABN` (confidence `exact`), `Head Office State`, `Head Office Postcode` and `Country` come from the ABR. `ABR note` records the ABR record's last-updated date, whether it is GST-registered, and that current status is not confirmed by an official agency list (this was in `Description` before the description pass). Other fields were filled later only from official directories (see [Descriptions and other fields](#descriptions-and-other-fields)).
 
 | Exclusion rule (first that applied) | Records |
 | --- | ---: |
@@ -277,6 +282,63 @@ Rules (`scripts/add_abr_types.py`, applied in this order; the first matching rul
 
 Caveats: an active ABN does not prove a body still exists. 174 of the added rows were last updated in the ABR before 2015, although most of those are still-current courts, regulators and registration boards. The rows flagged as questionable in the first pass were reviewed by hand (see above); the remaining rows have not each been checked against an official list. About 80 are small local statutory bodies (SA health advisory councils, NSW drainage unions and water trusts, Queensland water boards, WA land conservation district committees, Victorian cemetery trusts and ACFE regional councils). The roughly 6,300 excluded schools, kindergartens, Crown-land committees and Defence registrations could be added as a separate opt-in category.
 
+## Descriptions and other fields
+
+In November 2026, AGOR-style descriptions (one to three factual sentences on what the body does) were added for rows outside the Commonwealth, and other blank AGOR columns were filled where an official source gives them (`scripts/describe.py`; fetchers in `scripts/descriptions/`). Commonwealth rows keep their AGOR descriptions.
+
+Sources, in priority order:
+
+1. **Source list** (`source-list`): text already supplied by the list the row came from (for example Hydro Tasmania and TasPorts controlled-entity notes).
+2. **Official directories** (`official-directory`): the [Queensland Register of Appointees to Government Bodies](https://governmentbodies.premiers.qld.gov.au/) (body description, constitution date, maximum appointees, approval process, remuneration, reporting requirement, contact and address), the [NSW Government Directory](https://www.service.nsw.gov.au/nswgovdirectory) (description, website, phone, email, street address, related department → `Portfolio`), [WA.gov.au organisation pages](https://www.wa.gov.au/) (description, website, address, telephone, email, the minister's portfolio when exactly one minister is listed, annual report link) and NSW.gov.au department and agency pages.
+3. **Official site** (`official-site`): the body's own website (home page and about page meta description, or the first substantial paragraph of an about page). Text shared by several bodies, marketing or navigation text, and sites on another jurisdiction's or a federal domain were rejected.
+4. **Wikidata** (`wikidata`): the item description, as a last resort, only for an exact label match whose description names the row's state or territory (or the title does) and no other jurisdiction.
+
+Names are matched exactly after normalisation (case, punctuation, `the`, bracketed short names, state name ↔ abbreviation, inverted titles such as "Communities and Justice, NSW Department of"); ambiguous matches are skipped. Text is condensed to at most three sentences and first-person wording ("We regulate …") is put into the third person. Nothing else is added, and rows with no reliable source are left blank. Legislation (`Established by/Under More Info`) is filled only when the official description says the body was established under a named Act. `Head Office State`/`Postcode` were also filled from the ABR business address for rows with an ABN (`exact`/`high` match). `Other fields source` records which columns were filled from which page.
+
+Enabling-legislation objects sections and annual reports were not parsed at scale; no rows use those methods yet.
+
+| Jurisdiction | Rows | `existing-AGOR` | `source-list` | `official-directory` | `official-site` | `wikidata` | Blank | Filled % |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| Commonwealth | 1,377 | 1,372 | 0 | 0 | 0 | 0 | 5 | 99.6% |
+| NSW | 451 | 0 | 0 | 91 | 8 | 18 | 334 | 25.9% |
+| Victoria | 325 | 0 | 0 | 0 | 22 | 43 | 260 | 20.0% |
+| Queensland | 281 | 0 | 0 | 51 | 15 | 13 | 202 | 28.1% |
+| WA | 324 | 0 | 0 | 102 | 32 | 129 | 61 | 81.2% |
+| SA | 188 | 0 | 0 | 0 | 9 | 21 | 158 | 16.0% |
+| Tasmania | 84 | 0 | 18 | 0 | 10 | 5 | 51 | 39.3% |
+| ACT | 52 | 0 | 2 | 0 | 16 | 2 | 32 | 38.5% |
+| NT | 47 | 0 | 1 | 0 | 1 | 1 | 44 | 6.4% |
+| **All** | 3,129 | 1,372 | 21 | 244 | 113 | 232 | 1,147 | 63.3% |
+
+Columns filled (all 3,129 rows; `Description` before includes the 357 ABR status notes that moved to `ABR note`):
+
+| Column | Filled before | Filled after | Added |
+|---|---:|---:|---:|
+| Portfolio | 2,074 | 2,138 | +64 |
+| Description | 1,750 | 1,982 | +232 |
+| Description source URL | 0 | 1,982 | +1,982 |
+| Description method | 0 | 1,982 | +1,982 |
+| Established By / Under | 1,967 | 1,978 | +11 |
+| Established by/Under More Info | 1,298 | 1,309 | +11 |
+| Creation Date | 1,372 | 1,432 | +60 |
+| Max Number of Board / Committee Members | 564 | 628 | +64 |
+| Paid Members? | 432 | 496 | +64 |
+| Board / Committee Appointed by | 362 | 426 | +64 |
+| Annual Report Prepared and Tabled? | 896 | 957 | +61 |
+| Head Office Street Address | 1,033 | 1,144 | +111 |
+| Head Office Suburb | 1,030 | 1,141 | +111 |
+| Head Office State | 1,576 | 2,237 | +661 |
+| Head Office Postcode | 1,344 | 2,019 | +675 |
+| Head Office Country | 1,821 | 2,472 | +651 |
+| Website Address | 1,065 | 1,295 | +230 |
+| Annual Reports | 334 | 340 | +6 |
+| Contact telephone | 288 | 460 | +172 |
+| Generic agency email | 289 | 369 | +80 |
+| ABR note | 0 | 357 | +357 |
+| Other fields source | 0 | 839 | +839 |
+
+Caveats: descriptions from official sites and Wikidata are thinner than AGOR's (Wikidata often gives only a phrase such as "Local government area in Western Australia."). Victoria and SA have no official directory with descriptions that could be matched, so their coverage is lowest. Contact details and addresses come from directory pages and may lag the body's own site.
+
 ## Known coverage gaps
 
 - **Queensland and NT** are limited to agencies named in the current Administrative Arrangements Order (plus, for Queensland, two extra agencies from the ministers-and-departments page: Arts Queensland and Trade and Investment Queensland). Neither jurisdiction publishes a downloadable register of all statutory bodies. Queensland’s [Government Bodies](https://governmentbodies.premiers.qld.gov.au/) register has no export. NT Schedule 2 bodies that are not nominated as agencies in Schedule 1 are not included.
@@ -292,7 +354,7 @@ Caveats: an active ABN does not prove a body still exists. 174 of the added rows
 Every organisation has a small square PNG icon for use on profile pages, named after the organisation:
 `icons/png/<slug>.png`, where the slug is a jurisdiction prefix (`cth`, `nsw`, `vic`, `qld`, `wa`, `sa`, `tas`, `act`, `nt`) plus the kebab-case title, for example `icons/png/cth-australian-taxation-office.png`. Slugs are unique (a `-2` suffix is added for the few repeated titles).
 
-- `icons/png/` — one PNG per organisation (3,129 files, 723 distinct images), padded with transparency to a square. Own-site icons are scaled down to at most 128 px; fallback logos are 128–256 px.
+- `icons/png/` — one PNG per organisation (3,129 files, 751 distinct images), padded with transparency to a square. Own-site icons are scaled down to at most 128 px; fallback logos are 128–256 px.
 - `icons/svg/` — an SVG copy where the site publishes an SVG icon or logo (138 files). Defence-fallback rows get the "Australian Government | Defence" crest SVG from defence.gov.au.
 - `icons/manifest.csv` — slug, title, jurisdiction, website, icon file, SVG file, icon source URL, method, notes, width, height, original size and SHA-256.
 - `icons/aus-gov-orgs-icons-png.zip` — all PNGs plus the manifest in one download.
@@ -314,15 +376,15 @@ Method, in order of preference:
 | Jurisdiction | `own-site` | `own-site-wikidata` | `google-s2` | `defence-fallback` | `parent` | `fallback-jurisdiction` | Total |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | Commonwealth | 670 | 5 | 30 | 27 | 548 | 97 | 1,377 |
-| NSW | 1 | 46 | 5 | 0 | 160 | 239 | 451 |
-| Victoria | 5 | 47 | 2 | 0 | 138 | 133 | 325 |
-| Queensland | 40 | 11 | 6 | 0 | 69 | 155 | 281 |
-| WA | 127 | 116 | 13 | 0 | 3 | 65 | 324 |
-| SA | 0 | 19 | 1 | 0 | 0 | 168 | 188 |
-| Tasmania | 14 | 7 | 1 | 0 | 16 | 46 | 84 |
+| NSW | 87 | 7 | 5 | 0 | 147 | 205 | 451 |
+| Victoria | 30 | 20 | 2 | 0 | 137 | 136 | 325 |
+| Queensland | 46 | 5 | 6 | 0 | 69 | 155 | 281 |
+| WA | 167 | 84 | 13 | 0 | 3 | 57 | 324 |
+| SA | 10 | 10 | 1 | 0 | 0 | 167 | 188 |
+| Tasmania | 16 | 3 | 1 | 0 | 16 | 48 | 84 |
 | ACT | 34 | 1 | 0 | 0 | 2 | 15 | 52 |
-| NT | 3 | 8 | 1 | 0 | 0 | 35 | 47 |
-| **All** | 894 | 260 | 59 | 27 | 936 | 953 | 3,129 |
+| NT | 4 | 2 | 1 | 0 | 0 | 40 | 47 |
+| **All** | 1,064 | 137 | 59 | 27 | 922 | 920 | 3,129 |
 
 No logo was drawn or generated; every file comes from an official website (or Google's cache of one, where marked). The jurisdiction and Defence logos were rasterised or trimmed from the official artwork only. Icons and logos remain the property of the respective organisations and governments.
 

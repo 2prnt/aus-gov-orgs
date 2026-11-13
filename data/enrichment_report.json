@@ -42,12 +42,12 @@
       "pct": 64.4
     },
     "Head Office State": {
-      "n": 869,
-      "pct": 63.1
+      "n": 901,
+      "pct": 65.4
     },
     "Head Office Postcode": {
-      "n": 849,
-      "pct": 61.7
+      "n": 881,
+      "pct": 64.0
     },
     "Accountable Authority": {
       "n": 0,
@@ -60,6 +60,34 @@
     "Generic agency email": {
       "n": 0,
       "pct": 0.0
+    },
+    "Description": {
+      "n": 1372,
+      "pct": 99.6
+    },
+    "Creation Date": {
+      "n": 1372,
+      "pct": 99.6
+    },
+    "Annual Report Prepared and Tabled?": {
+      "n": 896,
+      "pct": 65.1
+    },
+    "Annual Reports": {
+      "n": 334,
+      "pct": 24.3
+    },
+    "Max Number of Board / Committee Members": {
+      "n": 564,
+      "pct": 41.0
+    },
+    "Board / Committee Appointed by": {
+      "n": 362,
+      "pct": 26.3
+    },
+    "Paid Members?": {
+      "n": 432,
+      "pct": 31.4
     },
     "ABN confidence": {
       "exact": 493,
@@ -74,12 +102,12 @@
       "pct": 41.2
     },
     "Website Address": {
-      "n": 1,
-      "pct": 0.2
+      "n": 134,
+      "pct": 29.7
     },
     "Portfolio": {
-      "n": 404,
-      "pct": 89.6
+      "n": 415,
+      "pct": 92.0
     },
     "Classification": {
       "n": 451,
@@ -94,38 +122,66 @@
       "pct": 0.4
     },
     "Established By / Under": {
-      "n": 395,
-      "pct": 87.6
+      "n": 398,
+      "pct": 88.2
     },
     "Established by/Under More Info": {
-      "n": 404,
-      "pct": 89.6
+      "n": 407,
+      "pct": 90.2
     },
     "Head Office Street Address": {
-      "n": 0,
-      "pct": 0.0
+      "n": 61,
+      "pct": 13.5
     },
     "Head Office Suburb": {
-      "n": 0,
-      "pct": 0.0
+      "n": 61,
+      "pct": 13.5
     },
     "Head Office State": {
-      "n": 47,
-      "pct": 10.4
+      "n": 205,
+      "pct": 45.5
     },
     "Head Office Postcode": {
-      "n": 45,
-      "pct": 10.0
+      "n": 203,
+      "pct": 45.0
     },
     "Accountable Authority": {
       "n": 404,
       "pct": 89.6
     },
     "Contact telephone": {
+      "n": 106,
+      "pct": 23.5
+    },
+    "Generic agency email": {
+      "n": 35,
+      "pct": 7.8
+    },
+    "Description": {
+      "n": 117,
+      "pct": 25.9
+    },
+    "Creation Date": {
       "n": 0,
       "pct": 0.0
     },
-    "Generic agency email": {
+    "Annual Report Prepared and Tabled?": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Annual Reports": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Max Number of Board / Committee Members": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Board / Committee Appointed by": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Paid Members?": {
       "n": 0,
       "pct": 0.0
     },
@@ -142,8 +198,8 @@
       "pct": 68.6
     },
     "Website Address": {
-      "n": 5,
-      "pct": 1.5
+      "n": 38,
+      "pct": 11.7
     },
     "Portfolio": {
       "n": 270,
@@ -178,12 +234,12 @@
       "pct": 0.0
     },
     "Head Office State": {
-      "n": 67,
-      "pct": 20.6
+      "n": 229,
+      "pct": 70.5
     },
     "Head Office Postcode": {
-      "n": 55,
-      "pct": 16.9
+      "n": 217,
+      "pct": 66.8
     },
     "Accountable Authority": {
       "n": 0,
@@ -194,6 +250,34 @@
       "pct": 0.0
     },
     "Generic agency email": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Description": {
+      "n": 65,
+      "pct": 20.0
+    },
+    "Creation Date": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Annual Report Prepared and Tabled?": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Annual Reports": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Max Number of Board / Committee Members": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Board / Committee Appointed by": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Paid Members?": {
       "n": 0,
       "pct": 0.0
     },
@@ -210,8 +294,8 @@
       "pct": 88.6
     },
     "Website Address": {
-      "n": 47,
-      "pct": 16.7
+      "n": 54,
+      "pct": 19.2
     },
     "Portfolio": {
       "n": 28,
@@ -230,40 +314,68 @@
       "pct": 20.6
     },
     "Established By / Under": {
-      "n": 154,
-      "pct": 54.8
+      "n": 159,
+      "pct": 56.6
     },
     "Established by/Under More Info": {
-      "n": 154,
-      "pct": 54.8
+      "n": 159,
+      "pct": 56.6
     },
     "Head Office Street Address": {
-      "n": 0,
-      "pct": 0.0
+      "n": 49,
+      "pct": 17.4
     },
     "Head Office Suburb": {
-      "n": 0,
-      "pct": 0.0
+      "n": 49,
+      "pct": 17.4
     },
     "Head Office State": {
-      "n": 253,
-      "pct": 90.0
+      "n": 279,
+      "pct": 99.3
     },
     "Head Office Postcode": {
-      "n": 99,
-      "pct": 35.2
+      "n": 139,
+      "pct": 49.5
     },
     "Accountable Authority": {
       "n": 0,
       "pct": 0.0
     },
     "Contact telephone": {
+      "n": 63,
+      "pct": 22.4
+    },
+    "Generic agency email": {
+      "n": 43,
+      "pct": 15.3
+    },
+    "Description": {
+      "n": 79,
+      "pct": 28.1
+    },
+    "Creation Date": {
+      "n": 60,
+      "pct": 21.4
+    },
+    "Annual Report Prepared and Tabled?": {
+      "n": 61,
+      "pct": 21.7
+    },
+    "Annual Reports": {
       "n": 0,
       "pct": 0.0
     },
-    "Generic agency email": {
-      "n": 0,
-      "pct": 0.0
+    "Max Number of Board / Committee Members": {
+      "n": 64,
+      "pct": 22.8
+    },
+    "Board / Committee Appointed by": {
+      "n": 64,
+      "pct": 22.8
+    },
+    "Paid Members?": {
+      "n": 64,
+      "pct": 22.8
     },
     "ABN confidence": {
       "exact": 246,
@@ -278,12 +390,12 @@
       "pct": 82.4
     },
     "Website Address": {
-      "n": 145,
-      "pct": 44.8
+      "n": 186,
+      "pct": 57.4
     },
     "Portfolio": {
-      "n": 0,
-      "pct": 0.0
+      "n": 53,
+      "pct": 16.4
     },
     "Classification": {
       "n": 324,
@@ -298,40 +410,68 @@
       "pct": 1.9
     },
     "Established By / Under": {
-      "n": 5,
-      "pct": 1.5
+      "n": 8,
+      "pct": 2.5
     },
     "Established by/Under More Info": {
-      "n": 5,
-      "pct": 1.5
+      "n": 8,
+      "pct": 2.5
     },
     "Head Office Street Address": {
-      "n": 143,
-      "pct": 44.1
+      "n": 144,
+      "pct": 44.4
     },
     "Head Office Suburb": {
-      "n": 143,
-      "pct": 44.1
+      "n": 144,
+      "pct": 44.4
     },
     "Head Office State": {
-      "n": 177,
-      "pct": 54.6
+      "n": 318,
+      "pct": 98.1
     },
     "Head Office Postcode": {
-      "n": 171,
-      "pct": 52.8
+      "n": 312,
+      "pct": 96.3
     },
     "Accountable Authority": {
       "n": 0,
       "pct": 0.0
     },
     "Contact telephone": {
-      "n": 288,
-      "pct": 88.9
+      "n": 291,
+      "pct": 89.8
     },
     "Generic agency email": {
-      "n": 289,
-      "pct": 89.2
+      "n": 291,
+      "pct": 89.8
+    },
+    "Description": {
+      "n": 263,
+      "pct": 81.2
+    },
+    "Creation Date": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Annual Report Prepared and Tabled?": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Annual Reports": {
+      "n": 6,
+      "pct": 1.9
+    },
+    "Max Number of Board / Committee Members": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Board / Committee Appointed by": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Paid Members?": {
+      "n": 0,
+      "pct": 0.0
     },
     "ABN confidence": {
       "exact": 253,
@@ -346,8 +486,8 @@
       "pct": 79.8
     },
     "Website Address": {
-      "n": 0,
-      "pct": 0.0
+      "n": 13,
+      "pct": 6.9
     },
     "Portfolio": {
       "n": 0,
@@ -382,12 +522,12 @@
       "pct": 0.0
     },
     "Head Office State": {
-      "n": 73,
-      "pct": 38.8
+      "n": 150,
+      "pct": 79.8
     },
     "Head Office Postcode": {
-      "n": 73,
-      "pct": 38.8
+      "n": 150,
+      "pct": 79.8
     },
     "Accountable Authority": {
       "n": 0,
@@ -398,6 +538,34 @@
       "pct": 0.0
     },
     "Generic agency email": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Description": {
+      "n": 30,
+      "pct": 16.0
+    },
+    "Creation Date": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Annual Report Prepared and Tabled?": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Annual Reports": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Max Number of Board / Committee Members": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Board / Committee Appointed by": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Paid Members?": {
       "n": 0,
       "pct": 0.0
     },
@@ -414,8 +582,8 @@
       "pct": 78.6
     },
     "Website Address": {
-      "n": 14,
-      "pct": 16.7
+      "n": 16,
+      "pct": 19.0
     },
     "Portfolio": {
       "n": 0,
@@ -450,12 +618,12 @@
       "pct": 0.0
     },
     "Head Office State": {
-      "n": 53,
-      "pct": 63.1
+      "n": 74,
+      "pct": 88.1
     },
     "Head Office Postcode": {
-      "n": 23,
-      "pct": 27.4
+      "n": 44,
+      "pct": 52.4
     },
     "Accountable Authority": {
       "n": 0,
@@ -466,6 +634,34 @@
       "pct": 0.0
     },
     "Generic agency email": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Description": {
+      "n": 33,
+      "pct": 39.3
+    },
+    "Creation Date": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Annual Report Prepared and Tabled?": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Annual Reports": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Max Number of Board / Committee Members": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Board / Committee Appointed by": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Paid Members?": {
       "n": 0,
       "pct": 0.0
     },
@@ -518,12 +714,12 @@
       "pct": 0.0
     },
     "Head Office State": {
-      "n": 17,
-      "pct": 32.7
+      "n": 35,
+      "pct": 67.3
     },
     "Head Office Postcode": {
-      "n": 13,
-      "pct": 25.0
+      "n": 31,
+      "pct": 59.6
     },
     "Accountable Authority": {
       "n": 0,
@@ -534,6 +730,34 @@
       "pct": 0.0
     },
     "Generic agency email": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Description": {
+      "n": 20,
+      "pct": 38.5
+    },
+    "Creation Date": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Annual Report Prepared and Tabled?": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Annual Reports": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Max Number of Board / Committee Members": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Board / Committee Appointed by": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Paid Members?": {
       "n": 0,
       "pct": 0.0
     },
@@ -550,8 +774,8 @@
       "pct": 97.9
     },
     "Website Address": {
-      "n": 3,
-      "pct": 6.4
+      "n": 4,
+      "pct": 8.5
     },
     "Portfolio": {
       "n": 0,
@@ -586,12 +810,12 @@
       "pct": 0.0
     },
     "Head Office State": {
-      "n": 20,
-      "pct": 42.6
+      "n": 46,
+      "pct": 97.9
     },
     "Head Office Postcode": {
-      "n": 16,
-      "pct": 34.0
+      "n": 42,
+      "pct": 89.4
     },
     "Accountable Authority": {
       "n": 0,
@@ -602,6 +826,34 @@
       "pct": 0.0
     },
     "Generic agency email": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Description": {
+      "n": 3,
+      "pct": 6.4
+    },
+    "Creation Date": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Annual Report Prepared and Tabled?": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Annual Reports": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Max Number of Board / Committee Members": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Board / Committee Appointed by": {
+      "n": 0,
+      "pct": 0.0
+    },
+    "Paid Members?": {
       "n": 0,
       "pct": 0.0
     },
@@ -618,12 +870,12 @@
       "pct": 54.7
     },
     "Website Address": {
-      "n": 1065,
-      "pct": 34.0
+      "n": 1295,
+      "pct": 41.4
     },
     "Portfolio": {
-      "n": 2074,
-      "pct": 66.3
+      "n": 2138,
+      "pct": 68.3
     },
     "Classification": {
       "n": 3033,
@@ -638,40 +890,68 @@
       "pct": 12.9
     },
     "Established By / Under": {
-      "n": 1967,
-      "pct": 62.9
+      "n": 1978,
+      "pct": 63.2
     },
     "Established by/Under More Info": {
-      "n": 1298,
-      "pct": 41.5
+      "n": 1309,
+      "pct": 41.8
     },
     "Head Office Street Address": {
-      "n": 1033,
-      "pct": 33.0
+      "n": 1144,
+      "pct": 36.6
     },
     "Head Office Suburb": {
-      "n": 1030,
-      "pct": 32.9
+      "n": 1141,
+      "pct": 36.5
     },
     "Head Office State": {
-      "n": 1576,
-      "pct": 50.4
+      "n": 2237,
+      "pct": 71.5
     },
     "Head Office Postcode": {
-      "n": 1344,
-      "pct": 43.0
+      "n": 2019,
+      "pct": 64.5
     },
     "Accountable Authority": {
       "n": 404,
       "pct": 12.9
     },
     "Contact telephone": {
-      "n": 288,
-      "pct": 9.2
+      "n": 460,
+      "pct": 14.7
     },
     "Generic agency email": {
-      "n": 289,
-      "pct": 9.2
+      "n": 369,
+      "pct": 11.8
+    },
+    "Description": {
+      "n": 1982,
+      "pct": 63.3
+    },
+    "Creation Date": {
+      "n": 1432,
+      "pct": 45.8
+    },
+    "Annual Report Prepared and Tabled?": {
+      "n": 957,
+      "pct": 30.6
+    },
+    "Annual Reports": {
+      "n": 340,
+      "pct": 10.9
+    },
+    "Max Number of Board / Committee Members": {
+      "n": 628,
+      "pct": 20.1
+    },
+    "Board / Committee Appointed by": {
+      "n": 426,
+      "pct": 13.6
+    },
+    "Paid Members?": {
+      "n": 496,
+      "pct": 15.9
     },
     "ABN confidence": {
       "exact": 1640,

@@ -46,6 +46,15 @@ def main(sheet_url: str | None = None):
     enrich.SOURCES_OUT[:] = base[:abr_i] + new + base[abr_i:]
     enrich.write_sources(ROOT / "data/sources.csv", rows)
     fill = enrich.fill_rates(rows)
+    rep_p = Path("/workspace/agor-sheet/desc/describe_report.json")
+    if rep_p.exists() and (ROOT / "data/fill_before_after.json").exists() is False:
+        (ROOT / "data/fill_before_after.json").write_text(rep_p.read_text())
+    if (ROOT / "data/fill_before_after.json").exists():
+        rep = json.loads((ROOT / "data/fill_before_after.json").read_text())
+        now = {c: sum(1 for r in rows if (r.get(c) or "").strip()) for c in cols}
+        skip = {"Jurisdiction", "Id", "Title", "Source name", "Source URL", "Source date", "Icon file", "Icon source URL", "Icon method"}
+        enrich.BEFORE_AFTER = {"title": "Fill before/after the November 2026 description and column pass (all rows, filled cells)",
+                               "rows": [(c, rep["before"].get(c, 0), now[c], len(rows)) for c in cols if c not in skip]}
     (ROOT / "data/enrichment_report.json").write_text(json.dumps(fill, indent=2))
     for p in [Path("/workspace/agor-sheet") / XLSX_NAME, ROOT / "data" / XLSX_NAME]:
         enrich.write_xlsx(p, rows, fill)

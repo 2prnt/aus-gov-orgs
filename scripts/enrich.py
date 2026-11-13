@@ -899,6 +899,14 @@ def fill_rates(rows: list[dict]) -> dict:
         "Accountable Authority",
         "Contact telephone",
         "Generic agency email",
+        "Description",
+        "Creation Date",
+        "Established By / Under",
+        "Annual Report Prepared and Tabled?",
+        "Annual Reports",
+        "Max Number of Board / Committee Members",
+        "Board / Committee Appointed by",
+        "Paid Members?",
     ]
     out: dict[str, dict] = {}
     groups = {"All": rows}
@@ -1162,6 +1170,16 @@ def write_xlsx(path: Path, org_rows: list[dict], fill: dict) -> None:
         "Accountable Authority",
         "Contact telephone",
         "Generic agency email",
+        "Description",
+        "Head Office State",
+        "Head Office Postcode",
+        "Creation Date",
+        "Established By / Under",
+        "Annual Report Prepared and Tabled?",
+        "Annual Reports",
+        "Max Number of Board / Committee Members",
+        "Board / Committee Appointed by",
+        "Paid Members?",
     ]
     headers = ["Jurisdiction", "Rows"] + [f"{c} %" for c in interest] + ["ABN exact", "ABN high", "ABN blank"]
     for col, name in enumerate(headers, 1):
@@ -1190,6 +1208,16 @@ def write_xlsx(path: Path, org_rows: list[dict], fill: dict) -> None:
         ws3.cell(r_i, 3 + len(interest), conf["exact"])
         ws3.cell(r_i, 4 + len(interest), conf["high"])
         ws3.cell(r_i, 5 + len(interest), conf["blank"])
+    ba = globals().get("BEFORE_AFTER")
+    if ba:
+        r0 = len(order) + 4
+        ws3.cell(r0, 1, ba["title"]).font = header_font
+        hdr = ["Column", "Filled before", "Filled after", "Before %", "After %", "Added"]
+        for c_i, name in enumerate(hdr, 1):
+            cell = ws3.cell(r0 + 1, c_i, name); cell.font = header_font; cell.fill = header_fill
+        for k, (col, b, a, n) in enumerate(ba["rows"], r0 + 2):
+            for c_i, v in enumerate([col, b, a, round(100 * b / n, 1), round(100 * a / n, 1), a - b], 1):
+                ws3.cell(k, c_i, v)
     ws3.freeze_panes = "A2"
     for i in range(1, len(headers) + 1):
         ws3.column_dimensions[get_column_letter(i)].width = 16
