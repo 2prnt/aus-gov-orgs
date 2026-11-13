@@ -4,7 +4,7 @@ A combined list of Australian government departments, agencies and related entit
 
 This repository is a UTF-8 CSV snapshot of the same dataset published as a Google Sheet:
 
-[Australian Government Organisations - All Jurisdictions (Nov 2026)](https://docs.google.com/spreadsheets/d/1TSvIt88EbW7GlT24kTlaGZWDgBBOXZMmCFN3VWKHAKg/edit)
+[Australian Government Organisations - All Jurisdictions (Nov 2026)](https://docs.google.com/spreadsheets/d/1C_L4zpS6PShxzaRiUycv_dgLkm8rcShLNUI7rXNnv7k/edit)
 
 The aim is a single, source-cited table analogous to the Commonwealth Department of Finance [Australian Government Organisations Register (AGOR)](https://data.gov.au/data/dataset/australian-government-organisations-register). No state or territory publishes an AGOR-equivalent CSV covering every public body. Where a downloadable register existed it was used in full; otherwise the best official structured source (administrative arrangements order, budget entity list, or government directory page) was parsed. Values were not invented: if a field could not be filled confidently it was left blank.
 
