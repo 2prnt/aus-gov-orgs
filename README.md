@@ -4,7 +4,7 @@ A combined list of Australian government departments, agencies and related entit
 
 This repository is a UTF-8 CSV snapshot of the same dataset published as a Google Sheet:
 
-[Australian Government Organisations - All Jurisdictions (Nov 2026)](https://docs.google.com/spreadsheets/d/1gt2IFl4agSuD-9vnFlwT3ENqdA0fMYKE1Tra2RkShYA/edit)
+[Australian Government Organisations - All Jurisdictions (Nov 2026)](https://docs.google.com/spreadsheets/d/19SZgsiUWH_YUFhcDtYF0vQtEJh4nlWNXwtfmw_CHtFQ/edit)
 
 The aim is a single, source-cited table analogous to the Commonwealth Department of Finance [Australian Government Organisations Register (AGOR)](https://data.gov.au/data/dataset/australian-government-organisations-register). No state or territory publishes an AGOR-equivalent CSV covering every public body. Where a downloadable register existed it was used in full; otherwise the best official structured source (administrative arrangements order, budget entity list, or government directory page) was parsed. Values were not invented: if a field could not be filled confidently it was left blank.
 
@@ -39,7 +39,7 @@ The published table uses the 36 AGOR columns as the unified schema, plus jurisdi
 | GFS Sector Classification | AGOR GFS class, or SA Budget Appendix D / similar GFS grouping where the source uses those terms |
 | Materiality … Budget Documentation | Remaining AGOR columns, populated for Commonwealth rows from the AGOR CSV; otherwise blank unless a state/territory source provides a clear equivalent |
 | Description | AGOR description (Commonwealth); for other rows a 1–3 sentence statement of purpose/functions from an official source (see [Descriptions and other fields](#descriptions-and-other-fields)) |
-| Description source URL, Description method | Page the description came from, and `existing-AGOR`, `source-list`, `official-directory`, `official-site` or `wikidata` |
+| Description source URL, Description method | Page the description came from, and `existing-AGOR`, `source-list`, `official-directory`, `official-site`, `legislation`, `annual-report` or `wikidata` |
 | Established By / Under | AGOR established-by code; set to `Act / Regulation` for NSW GSF agencies whose source legislation field names an Act or Regulation |
 | Established by/Under More Info | AGOR instrument text, or the NSW GSF “Relevant legislation of entity” field |
 | ABN | Australian Business Number, formatted `XX XXX XXX XXX`. Commonwealth: copied from AGOR. Other jurisdictions: official source ABN only after ABR verification, or a conservative ABR name match (see Methods) |
@@ -81,15 +81,15 @@ Percentages are the share of rows in that jurisdiction with a non-blank value. A
 | Jurisdiction | Rows | ABN | Website | Portfolio | Classification | Type of Body | Legislation / established under | Head office address | Accountable authority | Telephone | Agency email |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Commonwealth | 1,377 | 35.8% | 59.0% | 99.6% | 100.0% | 99.6% | 50.4% | 64.6% | 0.0% | 0.0% | 0.0% |
-| NSW | 451 | 41.2% | 29.7% | 92.0% | 100.0% | 0.4% | 90.2% | 13.5% | 89.6% | 23.5% | 7.8% |
-| Victoria | 325 | 68.6% | 11.7% | 83.1% | 100.0% | 83.1% | 1.5% | 0.0% | 0.0% | 0.0% | 0.0% |
-| Queensland | 281 | 88.6% | 19.2% | 10.0% | 65.8% | 54.8% | 56.6% | 17.4% | 0.0% | 22.4% | 15.3% |
-| WA | 324 | 82.4% | 57.4% | 16.4% | 100.0% | 1.9% | 2.5% | 44.4% | 0.0% | 89.8% | 89.8% |
-| SA | 188 | 79.8% | 6.9% | 0.0% | 100.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% | 0.0% |
-| Tasmania | 84 | 78.6% | 19.0% | 0.0% | 100.0% | 35.7% | 35.7% | 0.0% | 0.0% | 0.0% | 0.0% |
-| ACT | 52 | 63.5% | 71.2% | 0.0% | 100.0% | 7.7% | 3.8% | 0.0% | 0.0% | 0.0% | 0.0% |
-| NT | 47 | 97.9% | 8.5% | 0.0% | 100.0% | 8.5% | 8.5% | 0.0% | 0.0% | 0.0% | 0.0% |
-| **All** | **3,129** | **54.7%** | **41.4%** | **68.3%** | **96.9%** | **58.9%** | **41.8%** | **36.6%** | **12.9%** | **14.7%** | **11.8%** |
+| NSW | 451 | 41.2% | 29.7% | 92.0% | 100.0% | 0.4% | 91.4% | 13.5% | 89.6% | 23.5% | 7.8% |
+| Victoria | 325 | 68.6% | 11.7% | 83.1% | 100.0% | 83.1% | 20.9% | 0.0% | 0.0% | 0.0% | 0.0% |
+| Queensland | 281 | 88.6% | 19.2% | 10.0% | 65.8% | 54.8% | 60.5% | 17.4% | 0.0% | 22.4% | 15.3% |
+| WA | 324 | 82.4% | 57.4% | 16.4% | 100.0% | 1.9% | 3.4% | 44.4% | 0.0% | 89.8% | 89.8% |
+| SA | 188 | 79.8% | 6.9% | 0.0% | 100.0% | 0.0% | 16.0% | 0.0% | 0.0% | 0.0% | 0.0% |
+| Tasmania | 84 | 78.6% | 19.0% | 0.0% | 100.0% | 35.7% | 48.8% | 0.0% | 0.0% | 0.0% | 0.0% |
+| ACT | 52 | 63.5% | 71.2% | 0.0% | 100.0% | 7.7% | 26.9% | 0.0% | 0.0% | 0.0% | 0.0% |
+| NT | 47 | 97.9% | 8.5% | 0.0% | 100.0% | 8.5% | 36.2% | 0.0% | 0.0% | 0.0% | 0.0% |
+| **All** | **3,129** | **54.7%** | **41.4%** | **68.3%** | **96.9%** | **58.9%** | **46.6%** | **36.6%** | **12.9%** | **14.7%** | **11.8%** |
 
 | Jurisdiction | ABN exact | ABN high | ABN blank |
 | --- | ---: | ---: | ---: |
@@ -291,24 +291,25 @@ Sources, in priority order:
 1. **Source list** (`source-list`): text already supplied by the list the row came from (for example Hydro Tasmania and TasPorts controlled-entity notes).
 2. **Official directories** (`official-directory`): the [Queensland Register of Appointees to Government Bodies](https://governmentbodies.premiers.qld.gov.au/) (body description, constitution date, maximum appointees, approval process, remuneration, reporting requirement, contact and address), the [NSW Government Directory](https://www.service.nsw.gov.au/nswgovdirectory) (description, website, phone, email, street address, related department → `Portfolio`), [WA.gov.au organisation pages](https://www.wa.gov.au/) (description, website, address, telephone, email, the minister's portfolio when exactly one minister is listed, annual report link) and NSW.gov.au department and agency pages.
 3. **Official site** (`official-site`): the body's own website (home page and about page meta description, or the first substantial paragraph of an about page). Text shared by several bodies, marketing or navigation text, and sites on another jurisdiction's or a federal domain were rejected.
-4. **Wikidata** (`wikidata`): the item description, as a last resort, only for an exact label match whose description names the row's state or territory (or the title does) and no other jurisdiction.
+4. **Enabling legislation** (`legislation`, second pass): the Act that establishes the body, found by an establishment statement naming it ("There is established …", "… is constituted", "… is continued in existence", "a body corporate called …") in the jurisdiction's in-force Acts; the description states the Act and quotes up to three items of the body's functions or objects section (only when that section's heading or opening words name the body). When the Act has no matching functions section but its title contains the body's name, the description only states the Act (and section) it is established under. Acts were read from legislation.vic.gov.au (current version DOCX/PDF), legislation.act.gov.au (current DOCX) and legislation.nt.gov.au (current PDF); NSW, Queensland, WA, SA and Tasmanian Acts from the Open Australian Legal Corpus copies of the official NSW/Qld/WA/SA/Tas legislation sites (source URL is the official site; text as scraped in 2024, so later amendments to a functions section may not be reflected). `Established By / Under` (`Act / Regulation`) and `Established by/Under More Info` (section and Act) are filled from the same match when blank.
+5. **Annual reports** (`annual-report`, second pass): the annual reports link found on the body's own website (link text or URL says "annual report", the report or page names the body, not a shared portal page for another agency, not older than 2023) fills `Annual Reports`; a description is taken only from a paragraph of the report's first 15 pages that names the body and says what it is or does.
+6. **Wikidata** (`wikidata`): the item description, as a last resort, only for an exact label match whose description names the row's state or territory (or the title does) and no other jurisdiction. Wikidata one-liners under 120 characters were replaced when a legislation description was found.
 
 Names are matched exactly after normalisation (case, punctuation, `the`, bracketed short names, state name ↔ abbreviation, inverted titles such as "Communities and Justice, NSW Department of"); ambiguous matches are skipped. Text is condensed to at most three sentences and first-person wording ("We regulate …") is put into the third person. Nothing else is added, and rows with no reliable source are left blank. Legislation (`Established by/Under More Info`) is filled only when the official description says the body was established under a named Act. `Head Office State`/`Postcode` were also filled from the ABR business address for rows with an ABN (`exact`/`high` match). `Other fields source` records which columns were filled from which page.
 
-Enabling-legislation objects sections and annual reports were not parsed at scale; no rows use those methods yet.
 
-| Jurisdiction | Rows | `existing-AGOR` | `source-list` | `official-directory` | `official-site` | `wikidata` | Blank | Filled % |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|
-| Commonwealth | 1,377 | 1,372 | 0 | 0 | 0 | 0 | 5 | 99.6% |
-| NSW | 451 | 0 | 0 | 91 | 8 | 18 | 334 | 25.9% |
-| Victoria | 325 | 0 | 0 | 0 | 22 | 43 | 260 | 20.0% |
-| Queensland | 281 | 0 | 0 | 51 | 15 | 13 | 202 | 28.1% |
-| WA | 324 | 0 | 0 | 102 | 32 | 129 | 61 | 81.2% |
-| SA | 188 | 0 | 0 | 0 | 9 | 21 | 158 | 16.0% |
-| Tasmania | 84 | 0 | 18 | 0 | 10 | 5 | 51 | 39.3% |
-| ACT | 52 | 0 | 2 | 0 | 16 | 2 | 32 | 38.5% |
-| NT | 47 | 0 | 1 | 0 | 1 | 1 | 44 | 6.4% |
-| **All** | 3,129 | 1,372 | 21 | 244 | 113 | 232 | 1,147 | 63.3% |
+| Jurisdiction | Rows | `existing-AGOR` | `source-list` | `official-directory` | `official-site` | `legislation` | `annual-report` | `wikidata` | Blank | Filled % |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Commonwealth | 1,377 | 1,372 | 0 | 0 | 0 | 0 | 0 | 0 | 5 | 99.6% |
+| NSW | 451 | 0 | 0 | 91 | 8 | 38 | 1 | 16 | 297 | 34.1% |
+| Victoria | 325 | 0 | 0 | 0 | 22 | 63 | 0 | 35 | 205 | 36.9% |
+| Queensland | 281 | 0 | 0 | 51 | 15 | 9 | 0 | 13 | 193 | 31.3% |
+| WA | 324 | 0 | 0 | 102 | 32 | 3 | 0 | 129 | 58 | 82.1% |
+| SA | 188 | 0 | 0 | 0 | 9 | 26 | 0 | 16 | 137 | 27.1% |
+| Tasmania | 84 | 0 | 18 | 0 | 10 | 11 | 0 | 5 | 40 | 52.4% |
+| ACT | 52 | 0 | 2 | 0 | 16 | 11 | 0 | 1 | 22 | 57.7% |
+| NT | 47 | 0 | 1 | 0 | 1 | 13 | 0 | 0 | 32 | 31.9% |
+| **All** | 3,129 | 1,372 | 21 | 244 | 113 | 174 | 1 | 215 | 989 | 68.4% |
 
 Columns filled (all 3,129 rows; `Description` before includes the 357 ABR status notes that moved to `ABR note`):
 
@@ -336,6 +337,18 @@ Columns filled (all 3,129 rows; `Description` before includes the 357 ABR status
 | Generic agency email | 289 | 369 | +80 |
 | ABR note | 0 | 357 | +357 |
 | Other fields source | 0 | 839 | +839 |
+
+Second pass (enabling legislation and annual reports, `scripts/describe_pass2.py`; matchers in `scripts/descriptions/leg_*.py`, `ar_*.py`), columns changed:
+
+| Column | Before pass 2 | After pass 2 | Added |
+|---|---:|---:|---:|
+| Description | 1,982 | 2,140 | +158 |
+| Description source URL | 1,982 | 2,140 | +158 |
+| Description method | 1,982 | 2,140 | +158 |
+| Established By / Under | 1,978 | 2,126 | +148 |
+| Established by/Under More Info | 1,309 | 1,457 | +148 |
+| Annual Reports | 340 | 468 | +128 |
+| Other fields source | 839 | 955 | +116 |
 
 Caveats: descriptions from official sites and Wikidata are thinner than AGOR's (Wikidata often gives only a phrase such as "Local government area in Western Australia."). Victoria and SA have no official directory with descriptions that could be matched, so their coverage is lowest. Contact details and addresses come from directory pages and may lag the body's own site.
 

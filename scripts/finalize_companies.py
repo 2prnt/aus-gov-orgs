@@ -53,7 +53,7 @@ def main(sheet_url: str | None = None):
         rep = json.loads((ROOT / "data/fill_before_after.json").read_text())
         now = {c: sum(1 for r in rows if (r.get(c) or "").strip()) for c in cols}
         skip = {"Jurisdiction", "Id", "Title", "Source name", "Source URL", "Source date", "Icon file", "Icon source URL", "Icon method"}
-        enrich.BEFORE_AFTER = {"title": "Fill before/after the November 2026 description and column pass (all rows, filled cells)",
+        enrich.BEFORE_AFTER = {"title": "Fill before/after the November 2026 description and column passes (pass 1 directories/sites/Wikidata + pass 2 legislation/annual reports; all rows, filled cells)",
                                "rows": [(c, rep["before"].get(c, 0), now[c], len(rows)) for c in cols if c not in skip]}
     (ROOT / "data/enrichment_report.json").write_text(json.dumps(fill, indent=2))
     for p in [Path("/workspace/agor-sheet") / XLSX_NAME, ROOT / "data" / XLSX_NAME]:
