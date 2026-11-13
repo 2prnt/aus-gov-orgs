@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+data/organisations_base.csv
+data/*.xlsx
+.DS_Store

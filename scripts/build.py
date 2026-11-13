@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Build combined Australian government organisations workbook."""
+"""Parse official jurisdiction sources into a combined entity list.
+
+The published UTF-8 CSVs in data/ (AGOR-aligned schema, ABNs, websites)
+are written by enrich.py, which reads the 7-column base list produced
+here (or a snapshot at data/organisations_base.csv). This script still
+builds the working XLSX of entity rows and source citations.
+"""
 from __future__ import annotations
 
 import csv
