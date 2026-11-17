@@ -3,3 +3,6 @@ __pycache__/
 data/organisations_base.csv
 data/*.xlsx
 .DS_Store
+
+# 512 px zip is ~225 MB (GitHub file limit is 100 MB); kept on Google Drive instead.
+icons/aus-gov-orgs-icons-png-512.zip

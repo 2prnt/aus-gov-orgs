@@ -17,7 +17,7 @@ The aim is a single, source-cited table analogous to the Commonwealth Department
 - `scripts/build.py` — parse the official jurisdiction sources into the base entity list
 - `scripts/enrich.py` — map the AGOR schema, attach source-provided fields, match ABNs from the ABR bulk extract, and rewrite the published CSVs
 - `icons/` — one icon per organisation (see [Icons](#icons))
-- `scripts/wikidata_sites.py`, `fetch_icons.py`, `fetch_icons_deep.py`, `fetch_big_fallbacks.py`, `build_icons.py` — collect the icons
+- `scripts/wikidata_sites.py`, `fetch_icons.py`, `fetch_icons_deep.py`, `fetch_big_fallbacks.py`, `build_icons.py`, `build_large_icons.py` — collect the icons (small set and 512 px set)
 - `scripts/companies_data.py`, `add_companies.py`, `scan_abr_companies.py`, `apply_companies.py`, `finalize_companies.py` — add state/territory government-owned companies and subsidiaries (see [Government-owned companies](#government-owned-companies))
 - `scripts/abr_types_classify.py`, `scan_abr_dates.py`, `add_abr_types.py` and `data/abr_types_review.csv` (manual keep/remove decisions) — add government bodies from the ABR government entity types (see [ABR government entity types](#abr-government-entity-types))
 - `scripts/describe.py`, `scan_abr_addr.py` and `scripts/descriptions/` — descriptions and other AGOR columns from official directories, sites and Wikidata (see [Descriptions and other fields](#descriptions-and-other-fields)); `data/fill_before_after.json` holds the before/after counts
@@ -367,11 +367,14 @@ Caveats: descriptions from official sites and Wikidata are thinner than AGOR's (
 Every organisation has a small square PNG icon for use on profile pages, named after the organisation:
 `icons/png/<slug>.png`, where the slug is a jurisdiction prefix (`cth`, `nsw`, `vic`, `qld`, `wa`, `sa`, `tas`, `act`, `nt`) plus the kebab-case title, for example `icons/png/cth-australian-taxation-office.png`. Slugs are unique (a `-2` suffix is added for the few repeated titles).
 
-- `icons/png/` — one PNG per organisation (3,129 files, 751 distinct images), padded with transparency to a square. Own-site icons are scaled down to at most 128 px; fallback logos are 128–256 px.
-- `icons/svg/` — an SVG copy where the site publishes an SVG icon or logo (138 files). Defence-fallback rows get the "Australian Government | Defence" crest SVG from defence.gov.au.
-- `icons/manifest.csv` — slug, title, jurisdiction, website, icon file, SVG file, icon source URL, method, notes, width, height, original size and SHA-256.
-- `icons/aus-gov-orgs-icons-png.zip` — all PNGs plus the manifest in one download.
-- `data/organisations.csv` and `data/by-jurisdiction/*.csv` include `Icon file`, `Icon source URL` and `Icon method`.
+- `icons/png/` — one small PNG per organisation (3,129 files, 751 distinct images), padded with transparency to a square. Own-site icons are scaled down to at most 128 px; fallback logos are 128–256 px. This set is unchanged.
+- `icons/png-512/` — a 512×512 PNG for every organisation, same filenames, with transparent padding. Built only from a genuine source of at least 256 px or a vector; tiny favicons are never upscaled and passed off as large.
+- `icons/svg/` — an SVG copy where a vector of the organisation's own logo exists (425 files). Defence-fallback rows keep the "Australian Government | Defence" crest SVG from defence.gov.au.
+- `icons/svg-fallback/` — shared official parent and jurisdiction SVGs (31 unique files). Rows that use one of these as their large icon point `svg file` here rather than duplicating a large coat-of-arms file 1,000 times.
+- `icons/manifest.csv` — slug, title, jurisdiction, website, icon file, SVG file, icon source URL, method, notes, width, height, original size, SHA-256, plus `large_source_url`, `large_original_px` and `large_is_fallback`.
+- `icons/aus-gov-orgs-icons-png.zip` — the small PNGs plus the manifest in one download (kept in the repo).
+- `icons/aus-gov-orgs-icons-png-512.tar.xz` — the 512 px PNGs, per-organisation and shared SVGs, and the manifest, in one download (about 48 MB). A conventional zip of the same files is about 225 MB because official fallback logos are repeated per organisation; tar.xz stores those once, so that is the distributed archive. Extract with `tar -xJf icons/aus-gov-orgs-icons-png-512.tar.xz`. A copy is also on [Google Drive](https://drive.google.com/file/d/1_6t4wO-RcIpIS5ZzheNxi6gYxchFZ530/view?usp=drivesdk), in the same folder as the small icons zip.
+- `data/organisations.csv` and `data/by-jurisdiction/*.csv` include `Icon file`, `Icon source URL` and `Icon method` for the small set.
 
 Quality bar: every PNG is at least 1,000 bytes (smallest is 1,011 bytes), at least 32 px from a source of at least 32 px (nothing is upscaled), not blank, not all-white, and not a hosting-platform placeholder. Every fallback logo (parent, portfolio, Defence, jurisdiction) is at least 128 px. Icons that missed the bar were re-searched on the organisation's site (apple-touch and manifest icons, `/apple-touch-icon.png`, the header home-link logo, square `og:image`, SVGs rasterised) and then Google's favicon service at 128 px before falling back.
 
@@ -401,6 +404,31 @@ Method, in order of preference:
 
 No logo was drawn or generated; every file comes from an official website (or Google's cache of one, where marked). The jurisdiction and Defence logos were rasterised or trimmed from the official artwork only. Icons and logos remain the property of the respective organisations and governments.
 
+### Large (512 px) icons
+
+Every organisation also has a 512×512 PNG at `icons/png-512/<slug>.png`. A source is used only if it is a vector (SVG, including SVG favicons) or a raster whose longest side is genuinely 256 px or larger. An upscaled 16 px or 32 px favicon is never counted as large. Where no such own logo exists, the best official parent, portfolio, Defence, DVA or jurisdiction logo is used at 512 px and `large_is_fallback` is set to `true`.
+
+Sources, in order:
+
+1. The organisation's own site — apple-touch icons, web-app manifest icons, the largest layer in a `.ico`, and SVG favicons or header logos, rasterised where needed.
+2. Wikimedia Commons / Wikidata logo (property P154) for an exact title match, when the file is a logo rather than a photograph.
+3. Official artwork for the fallback parent: the Australian Government logo (agriculture.gov.au, 512 px), the NSW Government waratah (android-chrome-512), the Victoria State Government and Tasmanian Government wordmark SVGs, the official WA Government logo SVG, the SA Government wordmark, the ACT Government logo, Wikimedia Commons coats of arms for Queensland and the Northern Territory, and the Defence crest SVG from defence.gov.au.
+
+Of the 3,129 organisations, 991 have a large own logo (984 from the organisation's site, 7 from Wikidata P154) and 2,138 use a flagged official fallback (769 parent/portfolio, 26 Defence, 1,343 jurisdiction). 1,518 rows have a vector on file (425 per-organisation SVGs plus shared official/parent SVGs). Typical source size: median 512 px, 90th percentile 668 px, minimum 256 px, maximum 7,017 px. Nothing below 256 px was upscaled.
+
+| Jurisdiction | Own large logo | Fallback | Total |
+|---|---:|---:|---:|
+| Commonwealth | 582 | 795 | 1,377 |
+| NSW | 127 | 324 | 451 |
+| Victoria | 36 | 289 | 325 |
+| Queensland | 29 | 252 | 281 |
+| WA | 159 | 165 | 324 |
+| SA | 14 | 174 | 188 |
+| Tasmania | 14 | 70 | 84 |
+| ACT | 26 | 26 | 52 |
+| NT | 4 | 43 | 47 |
+| **All** | 991 | 2,138 | 3,129 |
+
 To rebuild the icons:
 
 ```text
@@ -408,7 +436,8 @@ python3 scripts/wikidata_sites.py        # find official sites for rows without 
 python3 scripts/fetch_icons.py           # fetch each host's icon into a local cache
 python3 scripts/fetch_icons_deep.py      # deeper search for icons that miss the quality bar
 python3 scripts/fetch_big_fallbacks.py   # >= 128 px logos for parent/portfolio fallbacks
-python3 scripts/build_icons.py           # assign icons, write icons/ and the icon CSV columns
+python3 scripts/build_icons.py           # assign icons, write icons/png and the icon CSV columns
+python3 scripts/build_large_icons.py     # find 256 px+ or vector sources, write icons/png-512
 ```
 
 ## Rebuilding

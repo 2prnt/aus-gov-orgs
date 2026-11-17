@@ -1,0 +1,27 @@
+<svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .favicon-navy {
+      fill: #1A428A;
+    }
+    .favicon-blue {
+      fill: #00A7E1;
+    }
+    .favicon-yellow {
+      fill: #FFCE06;
+    }
+    @media (prefers-color-scheme: dark) {
+      .favicon-navy,
+      .favicon-blue
+      {
+        fill: #FFCE06;
+      }
+      .favicon-yellow {
+        fill: white;
+      }
+    }
+  </style>
+  <path class="favicon-navy" d="M0 8.87024C6.18427 16.4146 9.59215 14.2955 11.8524 24.1533C7.26811 17.0066 0.819712 17.1554 0 8.87024Z"/>
+  <path class="favicon-navy" d="M24.7641 8.82776C18.589 16.3737 15.175 14.2379 12.9238 24.1078C17.5021 16.9596 23.9581 17.1129 24.7641 8.82776Z"/>
+  <path class="favicon-blue" d="M21.6936 11.158C17.0925 15.6558 14.2994 15.3583 12.3397 23.1956V23.2078C10.3785 15.3583 7.53683 15.6437 2.92822 11.1565L12.3974 2L21.6936 11.158Z"/>
+  <path class="favicon-yellow" d="M6.73828 11.108L8.76631 13.1315L12.3761 9.51565C13.6148 10.7452 16.0056 13.1315 16.0056 13.1315L18.0245 11.108L12.3776 5.47021L6.73828 11.108Z"/>
+</svg>
